@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0D5C4E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DOCTRACK">
+<title>DOCTRACK · Indo Japan</title>
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAABzElEQVR42u3SwQkAIAwEwVRgdb7tvwvtISiYMGHfgsfEWFNKFyYQQAJIAAkgCSABJIAEkASQABJAAkgCSAAJIAEkASSABJAAEkASQAJIAAkgCSABJIAEkASQABJAAkgCSAAJIAEkgCSABJAAEkASQAJIAAkgCSABJIAEkASQABJAAkgCSAAJIAEkgCSABJAAEkBP24+v679+2wcggAACCCCAAAIIIIAAAggggAACKDt0lfer7wMQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAABBBBAAAEEEEAAAQQQQAD1BXTrqkABCCCAAAIIIIAAAggggAACCCCAAOoOSD0CSAAJIAEkgCSABJAAEkASQAJIAAkgCSABJIAEkASQABJAAkgASQAJIAEkgCSABJAAEkASQAJIAAkgCSABJIAEkACSABJAAkgASQAJIAEkgCSABJAAEkASQAJIAAkgaR6JxbvBCxKT1QAAAABJRU5ErkJggg==">
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#fff;--sur:#F5F7FA;--sur2:#EBF0F6;--brd:#DDE4ED;--brd2:#C5CDD8;
+  --ink:#1A2433;--ink2:#374151;--mu:#6B7A8D;--mu2:#9AA5B1;
+  --tl:#0D5C4E;--tl2:#0F7060;--tlb:#EAF4F1;--tlr:#B0D4CB;
+  --rd:#B83228;--rdb:#FDF2F0;--rdr:#EFB8B3;
+  --am:#A86F00;--amb:#FEF9EC;--amr:#EDD48A;
+  --gn:#0A7D5E;--gnb:#EEF9F4;--gnr:#A0D9C4;
+  --bl:#1D6FA4;--blb:#EDF5FB;
+  --sh:0 1px 3px rgba(26,36,51,.07),0 2px 8px rgba(26,36,51,.04);
+  --shm:0 4px 14px rgba(26,36,51,.09),0 2px 4px rgba(26,36,51,.05);
+  --r:12px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+#root{max-width:700px;margin:0 auto;padding:14px 16px 100px}
+.card{background:var(--bg);border-radius:var(--r);box-shadow:var(--sh);padding:18px;margin-top:14px;border:1px solid var(--brd)}
+h2{font-size:17px;font-weight:700;margin-bottom:12px;color:var(--ink);letter-spacing:-.01em}
+h3{font-size:13.5px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+label{display:block;font-size:11.5px;font-weight:700;color:var(--mu);margin:11px 0 4px;text-transform:uppercase;letter-spacing:.05em}
+input,select,button,textarea{font:inherit}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=number],input[type=search],select{width:100%;padding:10px 13px;border:1.5px solid var(--brd);border-radius:var(--rs);background:var(--bg);color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{border-color:var(--tl);box-shadow:0 0 0 3px rgba(13,92,78,.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 18px;border:none;border-radius:var(--rs);font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;width:100%;margin-top:10px}
+.bp{background:var(--tl);color:#fff}.bp:hover{background:var(--tl2)}.bp:disabled{opacity:.45;cursor:default}
+.bg{background:transparent;color:var(--tl);border:1.5px solid var(--tlr)}.bg:hover{background:var(--tlb)}
+.bd{background:transparent;color:var(--rd);border:1.5px solid var(--rdr)}.bd:hover{background:var(--rdb)}
+.bsm{padding:7px 14px;font-size:13px;margin-top:0;width:auto}
+.brow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.brow .btn{flex:1;min-width:80px;margin-top:0}
+.badge{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px}
+.btl{background:var(--tlb);color:var(--tl)}.bam{background:var(--amb);color:var(--am)}.brd{background:var(--rdb);color:var(--rd)}.bgn{background:var(--gnb);color:var(--gn)}.bbl{background:var(--blb);color:var(--bl)}
+.al{padding:11px 14px;border-radius:var(--rs);font-size:13.5px;line-height:1.5;margin-top:10px}
+.ae{background:var(--rdb);color:var(--rd);border:1px solid var(--rdr)}
+.ao{background:var(--gnb);color:var(--gn);border:1px solid var(--gnr)}
+.aw{background:var(--amb);color:var(--am);border:1px solid var(--amr)}
+.ai{background:var(--tlb);color:var(--tl);border:1px solid var(--tlr)}
+.spin{display:inline-block;width:15px;height:15px;border:2.5px solid var(--tlr);border-top-color:var(--tl);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px;margin-right:5px;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 0 8px;border-bottom:1px solid var(--brd);flex-wrap:wrap;gap:8px}
+.brand{font-size:19px;font-weight:800;letter-spacing:-.02em;color:var(--tl)}
+.brand-sub{font-size:11px;color:var(--mu);display:block}
+.ta{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.st{padding:11px 6px;border-radius:var(--rs);text-align:center;cursor:pointer;border:1.5px solid transparent;background:var(--sur);transition:all .15s}
+.st.active{border-color:var(--tl);background:var(--tlb)}
+.sn{font-size:22px;font-weight:800;line-height:1.1}
+.sl{font-size:10px;font-weight:600;color:var(--mu);margin-top:2px;text-transform:uppercase;letter-spacing:.04em}
+.so .sn{color:var(--rd)}.ss .sn{color:var(--am)}.sg2 .sn{color:var(--gn)}
+.dr{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-top:1px solid var(--brd);cursor:pointer;transition:opacity .12s}
+.dr:hover{opacity:.72}.dr:first-child{border-top:none}
+.di{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;background:var(--sur)}
+.dt{font-size:14px;font-weight:600;color:var(--ink)}
+.dm{font-size:12px;color:var(--mu);margin-top:2px}
+.de{font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0;text-align:right}
+.eo{color:var(--rd)}.es{color:var(--am)}.ef{color:var(--gn)}.en{color:var(--mu2)}
+.uz{border:2px dashed var(--brd2);border-radius:var(--r);padding:20px 14px;text-align:center;cursor:pointer;background:var(--sur);transition:all .2s;-webkit-tap-highlight-color:transparent}
+.uz:hover,.uz:active{border-color:var(--tl);background:var(--tlb)}
+.uz-ic{font-size:30px;margin-bottom:5px;line-height:1}
+.uz-t{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.uz-s{font-size:11.5px;color:var(--mu)}
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin-top:10px}
+.pt{position:relative;border-radius:var(--rs);overflow:hidden;background:var(--sur);border:1.5px solid var(--brd)}
+.pt img{width:100%;height:74px;object-fit:cover;display:block}
+.pt-l{font-size:10px;font-weight:600;color:var(--mu);text-align:center;padding:3px 4px}
+.pt-r{position:absolute;top:3px;right:3px;width:19px;height:19px;border-radius:50%;background:rgba(184,50,40,.9);color:#fff;font-size:11px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.pt-s{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-size:9.5px;font-weight:700;color:var(--gn);background:rgba(255,255,255,.88);padding:1px 0}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fg .full{grid-column:1/-1}
+.fr{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.fr input,.fr select{flex:1;min-width:110px;font-size:13px;padding:8px 11px}
+.folder-bar{display:flex;gap:7px;overflow-x:auto;margin:10px 0 4px;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.folder-bar::-webkit-scrollbar{display:none}
+.fb{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:99px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;border:1.5px solid transparent;transition:all .15s;background:var(--sur);color:var(--ink2)}
+.fb.active{background:var(--tl);color:#fff;border-color:var(--tl)}
+.fb:not(.active):hover{border-color:var(--tlr);background:var(--tlb)}
+.div{border:none;border-top:1px solid var(--brd);margin:14px 0}
+.modal-bg{position:fixed;inset:0;background:rgba(26,36,51,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.modal-box{background:var(--bg);border-radius:16px;padding:22px;max-width:340px;width:100%;box-shadow:var(--shm)}
+.mt{font-size:16px;font-weight:700;margin-bottom:7px}
+.mb{font-size:13.5px;color:var(--mu);line-height:1.55;margin-bottom:16px}
+/* Analysis panel */
+.an-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.an-cell{background:var(--sur);border-radius:var(--rs);padding:10px 12px}
+.an-cell.full{grid-column:1/-1}
+.an-cell.risk{background:var(--rdb)}
+.an-cell.warn{background:var(--amb)}
+.an-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin-bottom:4px}
+.an-val{font-size:13px;color:var(--ink2);line-height:1.5}
+/* Chat */
+.chat-btn{position:fixed;bottom:24px;right:20px;width:52px;height:52px;border-radius:50%;background:var(--tl);color:#fff;font-size:22px;border:none;cursor:pointer;box-shadow:var(--shm);z-index:100;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.chat-btn:hover{transform:scale(1.08)}
+.chat-panel{position:fixed;inset:0;z-index:150;display:flex;flex-direction:column;background:var(--bg)}
+.chat-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--brd);background:var(--bg)}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:85%;padding:10px 13px;border-radius:12px;font-size:13.5px;line-height:1.55}
+.msg-u{background:var(--tl);color:#fff;align-self:flex-end;border-bottom-right-radius:3px}
+.msg-a{background:var(--sur);color:var(--ink);align-self:flex-start;border-bottom-left-radius:3px}
+.chat-foot{padding:10px 14px;border-top:1px solid var(--brd);display:flex;gap:8px;background:var(--bg)}
+.chat-foot input{flex:1;padding:10px 13px;border-radius:99px;font-size:14px}
+.chat-foot button{width:40px;height:40px;border-radius:50%;background:var(--tl);color:#fff;border:none;cursor:pointer;font-size:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sugg button{font-size:12px;padding:5px 11px;border-radius:99px;background:var(--tlb);color:var(--tl);border:1px solid var(--tlr);cursor:pointer}
+/* Timeline */
+.tl-item{display:flex;gap:12px;padding:10px 0;border-top:1px solid var(--brd)}
+.tl-item:first-child{border-top:none}
+.tl-date{min-width:54px;text-align:right;flex-shrink:0}
+.tl-day{font-size:17px;font-weight:800;line-height:1}
+.tl-mon{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px;align-self:flex-start}
+.tl-cnt{flex:1;cursor:pointer}
+.tl-t{font-size:13.5px;font-weight:600;color:var(--ink)}
+.tl-s{font-size:11.5px;color:var(--mu);margin-top:1px}
+/* Plans */
+.pl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:8px}
+.pl-card{border-radius:var(--rs);padding:13px 10px;border:1.5px solid var(--brd);text-align:center}
+.pl-card.cur{border-color:var(--tl);background:var(--tlb)}
+.pl-name{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);margin-bottom:3px}
+.pl-price{font-size:18px;font-weight:800;color:var(--ink);line-height:1.1}
+.pl-note{font-size:11px;font-weight:400;color:var(--mu)}
+.pl-feats{font-size:11px;color:var(--mu);margin-top:7px;text-align:left;line-height:1.75}
+@media(max-width:460px){.sg{grid-template-columns:repeat(2,1fr)}.pl-grid{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.fg .full{grid-column:1}.an-grid{grid-template-columns:1fr}.an-cell.full{grid-column:1}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="appsrc">
+const {useState,useEffect,useRef,useMemo,useCallback}=React;
+const SUPABASE_URL="https://lxnsipefybuorwtsxhlw.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4bnNpcGVmeWJ1b3J3dHN4aGx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MTU5NzUsImV4cCI6MjA5ODI5MTk3NX0.iIH1ZRXbUUiPklMOo2akQYipP3BR6h8UtnHVKzlJvOI";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+/* ── PLANS ─────────────────────────────────────────────────── */
+const PLANS={
+  free:{name:"Personal",badge:"FREE",docs:25,price:"₹0",note:"forever"},
+  family:{name:"Family",badge:"FAMILY",docs:200,price:"₹299",note:"/month"},
+  business:{name:"Business",badge:"PRO",docs:99999,price:"₹799",note:"/month"}
+};
+const gp=p=>PLANS[p]||PLANS.free;
+
+/* ── 18 DOCUMENT TYPES ─────────────────────────────────────── */
+const TYPES={
+  "Driving License":"🪪","Vehicle RC":"🚗","PUC Certificate":"💨",
+  "Insurance Policy":"🛡️","Mediclaim Policy":"🏥","Passport":"📕",
+  "Visa":"✈️","PAN Card":"🪪","Aadhaar Card":"🆔","Property Document":"🏠",
+  "Loan Document":"🏦","School Fee Receipt":"🎓","Fire NOC":"🔥",
+  "Trade License":"📋","Lease Agreement":"🔑","AMC":"🔧",
+  "Work Order":"📄","Invoice":"🧾","Other":"📁"
+};
+
+/* ── AI PROVIDER ───────────────────────────────────────────── */
+const AI={
+  model:"gemini-2.5-flash",provider:"gemini",mode:null,
+  getKey:()=>localStorage.getItem("dt_key")||"",
+  setKey:k=>localStorage.setItem("dt_key",k.trim()),
+  resetMode:()=>{AI.mode=null;},
+
+  prompt(){
+    const hints=Object.keys(TYPES).map(t=>`${t}: extract all visible fields relevant to this type`).join("; ");
+    return `You are a comprehensive document intelligence engine for an Indian business group (Indo Japan Horologicals).
+Analyse this document thoroughly. Return ONLY a valid JSON object with these exact keys (use null if not found):
+{
+  "doc_type": "one of: ${Object.keys(TYPES).join(", ")}",
+  "title": "short descriptive title",
+  "issuer": "issuing authority or company",
+  "holder": "person or company the document belongs to",
+  "ref_number": "main reference/licence/policy number",
+  "issue_date": "YYYY-MM-DD",
+  "expiry_date": "YYYY-MM-DD",
+  "amount": number_or_null,
+  "summary": "one clear sentence describing what this document is",
+  "penalties": "exact penalty clauses, fines, or legal consequences stated in the document. Include amounts. null if none.",
+  "compliance_deadline": "how early must renewal be initiated? any compliance timelines stated. null if not applicable.",
+  "obligations": "specific obligations the holder must fulfil (inspections, display requirements, reporting). null if none.",
+  "risk_on_expiry": "specific legal or financial consequences if this document expires or lapses. Include relevant Indian laws if visible. null if not stated.",
+  "action_required": "the specific next action the holder should take and by when. Be precise. null if no action needed.",
+  "financial_obligations": "recurring costs, EMIs, escalation clauses, premium schedules, or future financial commitments. null if none.",
+  "legal_jurisdiction": "governing law, applicable Indian acts, jurisdiction, arbitration clause. null if not stated.",
+  "key_clauses": "important exclusions, limitations, special conditions, sub-limits, co-pay, deductibles. null if none.",
+  "governing_authority": "regulator or government body (e.g. IRDAI, RTO, FSSAI, Municipal Corporation). null if not applicable."
+}
+CRITICAL: Indian dates are DD/MM/YYYY — always convert to YYYY-MM-DD. Never invent data not in the document.`;
+  },
+
+  parse(data){
+    let t=((data?.candidates?.[0]?.content?.parts?.[0]?.text)||"");
+    t=t.replace(/\`\`\`json|\`\`\`/g,"").trim();
+    if(!t) throw new Error("AI returned an empty response. Try a clearer, better-lit photo.");
+    try{return JSON.parse(t);}
+    catch(_){throw new Error("AI could not read this document. Ensure all text is visible and well-lit.");}
+  },
+
+  async callServer(parts){
+    const{data,error}=await sb.functions.invoke("ai-extract",{body:{parts}});
+    if(error) throw new Error("edge:"+(error.message||"unavailable"));
+    if(data?.error) throw new Error("edge:"+data.error);
+    return AI.parse(data);
+  },
+  async callBrowser(parts){
+    const k=AI.getKey();
+    if(!k) throw new Error("No Gemini key. Open ⚙ Settings and add your key.");
+    const r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+AI.model+":generateContent?key="+k,
+      {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts}]})});
+    if(!r.ok){const t=await r.text();throw new Error("Gemini "+r.status+": "+t.slice(0,140));}
+    return AI.parse(await r.json());
+  },
+  async call(parts){
+    if(AI.mode==="browser") return AI.callBrowser(parts);
+    try{const o=await AI.callServer(parts);AI.mode="server";return o;}
+    catch(e){
+      if(String(e.message).startsWith("edge:")&&AI.getKey()){AI.mode="browser";return AI.callBrowser(parts);}
+      throw e;
+    }
+  },
+  async extractFiles(fp){
+    const note=fp.length>1?`These ${fp.length} images are pages of ONE document. Combine all to produce one result.`:"";
+    return AI.call([{text:(note?note+"\n":"")+AI.prompt()}].concat(fp));
+  },
+  async extractText(text,kind){
+    return AI.call([{text:"Content from "+kind+":\n"+AI.prompt()},{text:text.slice(0,100000)}]);
+  },
+  async chat(question,docs){
+    const ctx=docs.slice(0,40).map(d=>`[${d.doc_type}] ${d.title||""} | Ref:${d.ref_number||"-"} | Expiry:${d.expiry_date||"-"} | Amount:${d.amount?"₹"+d.amount:"-"} | Entity:${d.entities?.name||"-"} | ${d.extracted?.summary||""} | Risk:${d.extracted?.risk_on_expiry||"-"} | Action:${d.extracted?.action_required||"-"}`).join("\n");
+    return AI.call([{text:`You are a document intelligence assistant for Indo Japan Horologicals (P) Ltd.\nVault (${docs.length} documents):\n${ctx}\n\nQuestion: ${question}\n\nAnswer specifically, cite document titles. If data is absent, say so.`}]);
+  }
+};
+
+/* ── HELPERS ────────────────────────────────────────────────── */
+const fmt=b=>b<1024?b+"B":b<1048576?Math.round(b/1024)+"KB":+(b/1048576).toFixed(1)+"MB";
+const toB64=f=>new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result.split(",")[1]);x.onerror=()=>j(new Error("Read fail"));x.readAsDataURL(f);});
+const toURL=f=>new Promise((r,j)=>{const x=new FileReader();x.onload=e=>r(e.target.result);x.onerror=()=>j(new Error("Read fail"));x.readAsDataURL(f);});
+const toAB=f=>new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result);x.onerror=()=>j(new Error("Read fail"));x.readAsArrayBuffer(f);});
+
+/* Date helpers — local midnight to avoid IST off-by-one */
+const daysTo=d=>{if(!d)return null;const e=new Date(d+"T00:00:00");const t=new Date();t.setHours(0,0,0,0);return Math.round((e-t)/86400000);};
+const ec=n=>n===null?"":n<0?"eo":n<=30?"es":"ef";
+const el=n=>n===null?"no expiry":n<0?(-n)+"d overdue":n===0?"due today":n+"d left";
+
+/* File type detection */
+const isImg=f=>f.type.startsWith("image/")||(!f.type&&/\.(jpg|jpeg|png|webp|heic|heif)$/i.test(f.name));
+const isPdf=f=>f.type==="application/pdf"||(!f.type&&f.name.toLowerCase().endsWith(".pdf"));
+const isDocx=f=>f.name.toLowerCase().endsWith(".docx");
+const isXlsx=f=>/\.(xlsx|xls|csv)$/i.test(f.name);
+
+const netChk=()=>{if(typeof navigator!="undefined"&&navigator.onLine===false)throw new Error("No internet. Please check your connection.");};
+
+/* FEATURE 3 — Maximum compression: 3-pass targeting <150KB */
+const compress=async f=>{
+  if(!isImg(f)||f.size<200*1024)return{file:f,sv:null};
+  const run=q=>new Promise(res=>{
+    const u=URL.createObjectURL(f);const img=new Image();
+    img.onload=()=>{
+      try{
+        const M=1200;let{width:w,height:h}=img;
+        if(Math.max(w,h)>M){const s=M/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
+        const c=document.createElement("canvas");c.width=w;c.height=h;
+        c.getContext("2d").drawImage(img,0,0,w,h);
+        URL.revokeObjectURL(u);c.toBlob(res,"image/jpeg",q);
+      }catch(_){URL.revokeObjectURL(u);res(null);}
+    };img.onerror=()=>{URL.revokeObjectURL(u);res(null);};img.src=u;
+  });
+  let blob=await run(0.72);
+  if(blob&&blob.size>400*1024) blob=await run(0.60)||blob;
+  if(blob&&blob.size>250*1024) blob=await run(0.48)||blob;
+  if(!blob||blob.size>=f.size)return{file:f,sv:null};
+  const nf=new File([blob],f.name.replace(/\.\w+$/,"")+".jpg",{type:"image/jpeg"});
+  return{file:nf,sv:{b:f.size,a:blob.size}};
+};
+
+/* FEATURE 5 — ICS calendar export */
+const makeICS=docs=>{
+  const evts=docs.filter(d=>d.expiry_date).map(d=>{
+    const dt=d.expiry_date.replace(/-/g,"");
+    const ttl=(d.title||d.doc_type||"Document").replace(/[,;]/g," ");
+    const desc=`Ref: ${d.ref_number||"-"}\\nEntity: ${d.entities?.name||"-"}\\n${d.extracted?.summary||""}`;
+    return `BEGIN:VEVENT\nSUMMARY:${ttl} expires\nDTSTART;VALUE=DATE:${dt}\nDTEND;VALUE=DATE:${dt}\nDESCRIPTION:${desc}\nBEGIN:VALARM\nTRIGGER:-P30D\nACTION:DISPLAY\nDESCRIPTION:30 days: ${ttl}\nEND:VALARM\nBEGIN:VALARM\nTRIGGER:-P7D\nACTION:DISPLAY\nDESCRIPTION:7 days: ${ttl}\nEND:VALARM\nBEGIN:VALARM\nTRIGGER:-P1D\nACTION:DISPLAY\nDESCRIPTION:Tomorrow: ${ttl}\nEND:VALARM\nEND:VEVENT`;
+  });
+  return `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//DOCTRACK//Indo Japan//EN\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:DOCTRACK Expiry Dates\nX-WR-TIMEZONE:Asia/Kolkata\n${evts.join("\n")}\nEND:VCALENDAR`;
+};
+const dlICS=(docs,name)=>{
+  const blob=new Blob([makeICS(docs)],{type:"text/calendar;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=(name||"DOCTRACK")+".ics";a.click();URL.revokeObjectURL(a.href);
+};
+
+/* ── CONFIRM MODAL ─────────────────────────────────────────── */
+function Confirm({title,msg,yes="Delete",onYes,onNo}){
+  return <div className="modal-bg" onClick={onNo}><div className="modal-box" onClick={e=>e.stopPropagation()}>
+    <div className="mt">{title}</div><div className="mb">{msg}</div>
+    <div className="brow"><button className="btn bd" onClick={onYes}>{yes}</button><button className="btn bg" onClick={onNo}>Cancel</button></div>
+  </div></div>;
+}
+
+/* ── LOGIN ─────────────────────────────────────────────────── */
+function Login(){
+  const[em,setEm]=useState("");const[pw,setPw]=useState("");
+  const[mode,setMode]=useState("in");const[msg,setMsg]=useState(null);const[busy,setBusy]=useState(false);
+  const go=async()=>{
+    if(!em.trim()){setMsg({e:1,m:"Enter your email."});return;}
+    setBusy(true);setMsg(null);
+    if(mode==="rst"){
+      const{error}=await sb.auth.resetPasswordForEmail(em.trim(),{redirectTo:window.location.href});
+      setBusy(false);setMsg(error?{e:1,m:error.message}:{e:0,m:"Reset link sent — check your inbox."});return;
+    }
+    if(mode==="up"&&pw.length<8){setBusy(false);setMsg({e:1,m:"Password must be at least 8 characters."});return;}
+    const{error}=mode==="in"?await sb.auth.signInWithPassword({email:em.trim(),password:pw}):await sb.auth.signUp({email:em.trim(),password:pw});
+    setBusy(false);
+    if(error){const m=error.message.includes("Email not confirmed")?"Account created but email confirmation is required. In Supabase → Authentication → Providers → Email — turn OFF Confirm email, then sign in.":error.message;setMsg({e:1,m});}
+    else if(mode==="up") setMsg({e:0,m:"Account created — tap Sign in."});
+  };
+  const ok=e=>{if(e.key==="Enter"&&!busy)go();};
+  return <div style={{maxWidth:420,margin:"50px auto"}}>
+    <div className="card">
+      <div style={{textAlign:"center",marginBottom:18}}>
+        <div className="brand" style={{fontSize:26}}>DOCTRACK</div>
+        <div style={{fontSize:12.5,color:"var(--mu)",marginTop:2}}>Indo Japan · Document Intelligence</div>
+      </div>
+      {mode!=="rst"&&<React.Fragment>
+        <label>Email</label><input type="email" value={em} onChange={e=>setEm(e.target.value)} onKeyDown={ok} placeholder="you@company.com"/>
+        <label>Password</label><input type="password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={ok} placeholder="••••••••"/>
+        <button className="btn bp" disabled={busy} onClick={go}>{busy?<React.Fragment><span className="spin"/>Please wait…</React.Fragment>:mode==="in"?"Sign in":"Create account"}</button>
+        <button className="btn bg" style={{marginTop:7}} onClick={()=>{setMode(mode==="in"?"up":"in");setMsg(null);}}>{mode==="in"?"New here? Create account":"Have an account? Sign in"}</button>
+        <div style={{textAlign:"center",marginTop:10}}><a href="#" style={{fontSize:12,color:"var(--mu)"}} onClick={e=>{e.preventDefault();setMode("rst");setMsg(null);}}>Forgot password?</a></div>
+      </React.Fragment>}
+      {mode==="rst"&&<React.Fragment>
+        <label>Email</label><input type="email" value={em} onChange={e=>setEm(e.target.value)} onKeyDown={ok} autoFocus/>
+        <button className="btn bp" disabled={busy} onClick={go}>{busy?"Sending…":"Send reset link"}</button>
+        <button className="btn bg" style={{marginTop:7}} onClick={()=>{setMode("in");setMsg(null);}}>Back</button>
+      </React.Fragment>}
+      {msg&&<div className={"al "+(msg.e?"ae":"ao")} style={{marginTop:10}}>{msg.m}</div>}
+    </div>
+  </div>;
+}
+
+/* ── SETTINGS ──────────────────────────────────────────────── */
+function Settings({profile,onClose}){
+  const[k,setK]=useState(AI.getKey());const[tst,setTst]=useState(false);
+  const plan=gp(profile?.plan);
+  const ml=AI.mode==="server"?"✅ Server (secure)":AI.mode==="browser"?"⚠️ Browser key (fallback)":"Auto-detecting on next scan";
+  const recheck=async()=>{setTst(true);AI.resetMode();try{await AI.callServer([{text:"ping"}]);}catch(_){}setTst(false);};
+  return <div className="card">
+    <h2>⚙ Settings</h2>
+    <div className="al ai" style={{marginTop:0}}>AI mode: <b>{ml}</b></div>
+    {AI.mode!=="server"&&<React.Fragment>
+      <label>Gemini API key</label>
+      <input type="text" value={k} onChange={e=>setK(e.target.value)} placeholder="AIza…"/>
+      <div style={{fontSize:11.5,color:"var(--mu)",marginTop:3}}>Free key from aistudio.google.com → Get API key</div>
+      <button className="btn bp" onClick={()=>{AI.setKey(k);onClose();}}>Save key</button>
+      <button className="btn bg" style={{marginTop:7}} disabled={tst} onClick={recheck}>{tst?<React.Fragment><span className="spin"/>Checking…</React.Fragment>:"Re-check server mode"}</button>
+    </React.Fragment>}
+    <div className="div"/>
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+      <div><div style={{fontSize:11,fontWeight:700,color:"var(--mu)",textTransform:"uppercase",letterSpacing:".04em"}}>Plan</div>
+        <div style={{fontSize:15,fontWeight:700,marginTop:2}}>{plan.name} <span className="badge btl">{plan.badge}</span></div>
+        <div style={{fontSize:12,color:"var(--mu)",marginTop:1}}>{plan.docs<9999?plan.docs+" docs max":"Unlimited"}</div></div>
+      <button className="btn bg bsm" onClick={onClose}>Close</button>
+    </div>
+  </div>;
+}
+
+/* ── PLANS ─────────────────────────────────────────────────── */
+function Plans({profile,onClose}){
+  const cur=profile?.plan||"free";
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+      <h2 style={{marginBottom:0}}>Plans</h2>
+      <button className="btn bg bsm" onClick={onClose}>✕</button>
+    </div>
+    <div className="pl-grid">
+      {Object.values(PLANS).map(p=><div key={p.id||p.name} className={"pl-card"+(cur===p.badge.toLowerCase()?" cur":"")}>
+        {cur===p.badge.toLowerCase()&&<div style={{fontSize:9.5,color:"var(--tl)",fontWeight:700,marginBottom:2}}>YOUR PLAN</div>}
+        <div className="pl-name">{p.name}</div>
+        <div className="pl-price">{p.price}<span className="pl-note"> {p.note}</span></div>
+        <div className="pl-feats">📁 {p.docs<9999?p.docs+" docs":"Unlimited"}<br/>📧 {p.badge==="FREE"?"No":"Daily"} digest<br/>{p.badge!=="FREE"?"👥 Team access":""}</div>
+      </div>)}
+    </div>
+    <div style={{marginTop:10,fontSize:12,color:"var(--mu)",textAlign:"center"}}>Upgrades coming soon. Contact admin to change plans.</div>
+  </div>;
+}
+
+/* ── FEATURE 1: FOLDER MANAGER ─────────────────────────────── */
+function FolderManager({folders,onClose,onRefresh}){
+  const[name,setName]=useState("");const[col,setCol]=useState("#0D5C4E");
+  const[icon,setIcon]=useState("📁");const[busy,setBusy]=useState(false);const[err,setErr]=useState(null);
+  const icons=["📁","📂","🏢","🏠","🚗","🛡️","📋","🔑","🔧","💰","📊","⚖️","🏦","🎓","🔥","📑"];
+  const create=async()=>{
+    if(!name.trim()){setErr("Enter a folder name.");return;}
+    setBusy(true);setErr(null);
+    const{error}=await sb.from("folders").insert({name:name.trim(),color:col,icon});
+    if(error)setErr(error.message);else{setName("");await onRefresh();}
+    setBusy(false);
+  };
+  const del=async id=>{
+    setBusy(true);
+    // Move documents in this folder to no folder
+    await sb.from("documents").update({folder_id:null}).eq("folder_id",id);
+    await sb.from("folders").delete().eq("id",id);
+    await onRefresh();setBusy(false);
+  };
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+      <h2 style={{marginBottom:0}}>📁 Manage Folders</h2>
+      <button className="btn bg bsm" onClick={onClose}>✕</button>
+    </div>
+    <label>Create new folder</label>
+    <div style={{display:"flex",gap:7,alignItems:"center"}}>
+      <input type="text" value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Compliance" style={{flex:1}}/>
+      <input type="color" value={col} onChange={e=>setCol(e.target.value)} style={{width:38,height:38,padding:2,border:"1.5px solid var(--brd)",borderRadius:8,cursor:"pointer"}}/>
+    </div>
+    <div style={{display:"flex",flexWrap:"wrap",gap:6,margin:"8px 0"}}>
+      {icons.map(ic=><span key={ic} style={{fontSize:22,cursor:"pointer",opacity:icon===ic?1:.45}} onClick={()=>setIcon(ic)}>{ic}</span>)}
+    </div>
+    <button className="btn bp" disabled={busy} onClick={create}>Create folder</button>
+    {err&&<div className="al ae">{err}</div>}
+    {folders.length>0&&<React.Fragment>
+      <div className="div"/>
+      <h3>Existing folders</h3>
+      {folders.map(f=><div key={f.id} style={{display:"flex",alignItems:"center",gap:9,padding:"8px 0",borderTop:"1px solid var(--brd)"}}>
+        <span style={{fontSize:20}}>{f.icon}</span>
+        <span style={{flex:1,fontWeight:600,fontSize:14}}>{f.name}</span>
+        <button className="btn bd bsm" disabled={busy} onClick={()=>del(f.id)}>Delete</button>
+      </div>)}
+    </React.Fragment>}
+  </div>;
+}
+
+/* ── UPLOADER ─────────────────────────────────────────────── */
+function Uploader({entities,docs,profile,folders,onSaved,preloaded,onClearPreload}){
+  const[stage,setStage]=useState("idle");
+  const[files,setFiles]=useState([]);const[prevs,setPrevs]=useState([]);const[svgs,setSvgs]=useState([]);
+  const[fields,setFields]=useState(null);const[eid,setEid]=useState("");const[fid,setFid]=useState("");
+  const[err,setErr]=useState(null);
+  const fRef=useRef();const cRef=useRef();
+  const plan=gp(profile?.plan);const isAdmin=profile?.role==="admin";
+  const atLimit=!isAdmin&&docs.length>=plan.docs;
+
+  // FEATURE 2 — Handle preloaded shared file (from WhatsApp share target)
+  useEffect(()=>{
+    if(preloaded&&stage==="idle"){
+      addFiles([preloaded]);
+      if(onClearPreload) onClearPreload();
+    }
+  },[preloaded]);
+
+  const addFiles=async list=>{
+    const arr=Array.from(list||[]);if(!arr.length)return;
+    setErr(null);
+    try{netChk();}catch(e){setErr(e.message);return;}
+    if(atLimit){setErr("Plan limit reached ("+plan.docs+" docs). Upgrade to add more.");return;}
+    const big=arr.find(f=>f.size>15*1024*1024);
+    if(big){setErr('"'+big.name.slice(0,28)+'" is over 15MB. Photograph pages instead.');return;}
+    const office=arr.find(f=>isDocx(f)||isXlsx(f));
+    if(office){await extract([office]);return;}
+    const good=arr.filter(f=>isImg(f)||isPdf(f));
+    if(!good.length){setErr("Accepted: photos, PDF, Word (.docx), Excel (.xlsx/.csv).");return;}
+    const rs=[],ps=[],ss=[];
+    for(const f of good){
+      const{file:cf,sv}=await compress(f);rs.push(cf);ss.push(sv);
+      if(isImg(cf)){try{const pu=await toURL(cf);ps.push(pu);}catch{ps.push(null);}}else ps.push(null);
+    }
+    setFiles(p=>[...p,...rs]);setPrevs(p=>[...p,...ps]);setSvgs(p=>[...p,...ss]);
+  };
+
+  const rmPage=i=>{setFiles(p=>p.filter((_,j)=>j!==i));setPrevs(p=>p.filter((_,j)=>j!==i));setSvgs(p=>p.filter((_,j)=>j!==i));};
+
+  const extract=async fl=>{
+    const use=fl||files;if(!use.length)return;
+    setStage("extracting");setErr(null);
+    try{
+      netChk();let out;const f0=use[0];
+      if(isDocx(f0)){const b=await toAB(f0);const r=await mammoth.extractRawText({arrayBuffer:b});out=await AI.extractText(r.value,"a Word document");}
+      else if(isXlsx(f0)){const b=await toAB(f0);const wb=XLSX.read(b,{type:"array"});const csv=wb.SheetNames.map(n=>"---"+n+"---\n"+XLSX.utils.sheet_to_csv(wb.Sheets[n])).join("\n");out=await AI.extractText(csv,"an Excel/CSV spreadsheet");}
+      else{const pts=[];for(const f of use){const mt=(f.type==="image/heic"||f.type==="image/heif")?"image/jpeg":(f.type||"image/jpeg");pts.push({inline_data:{mime_type:mt,data:await toB64(f)}});}out=await AI.extractFiles(pts);}
+      setFiles(use);setFields({...out,entity_id:eid||(entities[0]?.id||""),folder_id:fid||null});setStage("confirm");
+    }catch(e){setErr((e?.message)||"Extraction failed. Check internet.");setStage("idle");}
+  };
+
+  const save=async()=>{
+    setStage("saving");setErr(null);const up=[];
+    try{
+      netChk();const stamp=Date.now();
+      for(let i=0;i<files.length;i++){
+        const f=files[i];const path=stamp+"_p"+(i+1)+"_"+f.name.replace(/[^\w.\-]/g,"_");
+        const{error}=await sb.storage.from("documents").upload(path,f);
+        if(error)throw error;up.push(path);
+      }
+      const f0=files[0];const ft=isPdf(f0)?"pdf":isDocx(f0)?"docx":isXlsx(f0)?"xlsx":"image";
+      const raw=fields.amount;const amt=(raw!=null&&raw!==""&&!isNaN(Number(raw)))?Number(raw):null;
+      // Store ALL extracted fields including analysis in the extracted JSONB
+      const{error:dbErr}=await sb.from("documents").insert({
+        entity_id:fields.entity_id||null,folder_id:fields.folder_id||null,
+        title:fields.title||null,doc_type:fields.doc_type||"Other",
+        issuer:fields.issuer||null,holder:fields.holder||null,ref_number:fields.ref_number||null,
+        issue_date:fields.issue_date||null,expiry_date:fields.expiry_date||null,amount:amt,
+        extracted:{...fields,pages:up},ai_provider:AI.provider,storage_path:up[0],file_type:ft
+      });
+      if(dbErr)throw dbErr;
+      setStage("idle");setFiles([]);setFields(null);setPrevs([]);setSvgs([]);onSaved();
+    }catch(e){
+      if(up.length)try{await sb.storage.from("documents").remove(up);}catch(_){}
+      setErr((e?.message)||"Save failed. Try again.");setStage("confirm");
+    }
+  };
+
+  const F=(k,lbl,tp)=><div className={k==="title"?"full":""}>
+    <label>{lbl}</label>
+    <input type={tp||"text"} value={fields[k]??""} onChange={e=>setFields({...fields,[k]:e.target.value})}/>
+  </div>;
+
+  if(stage==="extracting")return <div className="card" style={{textAlign:"center",padding:"28px 18px"}}>
+    <div style={{fontSize:30,marginBottom:8}}>🧠</div>
+    <div style={{fontWeight:600}}><span className="spin"/>Reading {files.length>1?files.length+" pages":"document"}…</div>
+    <div style={{fontSize:13,color:"var(--mu)",marginTop:5}}>Usually 5–20 seconds. Keep this page open.</div>
+  </div>;
+
+  if(stage==="confirm"||stage==="saving")return <div className="card">
+    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+      <h2 style={{marginBottom:0}}>Confirm details</h2>
+      <span className="badge btl">AI proposed — you approve</span>
+    </div>
+    <div className="fg">
+      {F("title","Document title")}
+      <div><label>Entity</label><select value={fields.entity_id} onChange={e=>setFields({...fields,entity_id:e.target.value})}>{entities.map(en=><option key={en.id} value={en.id}>{en.name}</option>)}</select></div>
+      <div><label>Document type</label><select value={fields.doc_type||"Other"} onChange={e=>setFields({...fields,doc_type:e.target.value})}>{Object.keys(TYPES).map(t=><option key={t}>{t}</option>)}</select></div>
+      <div><label>Folder (optional)</label><select value={fields.folder_id||""} onChange={e=>setFields({...fields,folder_id:e.target.value||null})}>
+        <option value="">No folder</option>{folders.map(f=><option key={f.id} value={f.id}>{f.icon} {f.name}</option>)}
+      </select></div>
+      {F("ref_number","Reference / number")}
+      {F("issuer","Issuer")}
+      {F("holder","Holder")}
+      {F("issue_date","Issue date","date")}
+      {F("expiry_date","Expiry / renewal date","date")}
+      {F("amount","Amount (₹)","number")}
+    </div>
+    {fields.summary&&<div className="al ai" style={{marginTop:8,fontSize:12.5}}>{fields.summary}</div>}
+    {/* Analysis preview */}
+    {(fields.penalties||fields.risk_on_expiry||fields.action_required)&&<div className="al aw" style={{marginTop:8,fontSize:12}}>
+      {fields.penalties&&<div>⚠️ <b>Penalty:</b> {fields.penalties}</div>}
+      {fields.risk_on_expiry&&<div>🔴 <b>Risk:</b> {fields.risk_on_expiry}</div>}
+      {fields.action_required&&<div>✅ <b>Action:</b> {fields.action_required}</div>}
+    </div>}
+    {files.length>1&&<div style={{display:"flex",flexWrap:"wrap",gap:5,marginTop:8}}>{files.map((_,i)=><span key={i} className="badge btl">Page {i+1}</span>)}</div>}
+    <button className="btn bp" disabled={stage==="saving"} onClick={save} style={{marginTop:12}}>{stage==="saving"?<React.Fragment><span className="spin"/>Saving…</React.Fragment>:"Save to vault"}</button>
+    <button className="btn bg" disabled={stage==="saving"} style={{marginTop:7}} onClick={()=>{setStage("idle");setFiles([]);setFields(null);setPrevs([]);setSvgs([]);}}>Discard</button>
+    {err&&<div className="al ae">{err}</div>}
+  </div>;
+
+  const ready=entities&&entities.length>0;
+  const noKey=AI.mode!=="server"&&!AI.getKey();
+  return <div className="card">
+    <h2>Add a document</h2>
+    {noKey&&<div className="al aw">⚙ <b>First time?</b> Open Settings and add your Gemini API key to enable AI scanning. Get it free at aistudio.google.com.</div>}
+    {atLimit&&<div className="al aw">📋 Plan limit reached ({plan.docs} docs). Contact admin to upgrade.</div>}
+    {!ready&&<div style={{color:"var(--mu)",fontSize:13,margin:"8px 0"}}><span className="spin"/>Loading…</div>}
+    {ready&&!atLimit&&<React.Fragment>
+      <label>Entity</label>
+      <select value={eid} onChange={e=>setEid(e.target.value)}>{entities.map(en=><option key={en.id} value={en.id}>{en.name}</option>)}</select>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:12}}>
+        <div className="uz" onClick={()=>cRef.current.click()}>
+          <div className="uz-ic">📷</div><div className="uz-t">Scan Document</div><div className="uz-s">Opens camera directly</div>
+        </div>
+        <div className="uz" onClick={()=>fRef.current.click()}>
+          <div className="uz-ic">📎</div><div className="uz-t">Import File</div><div className="uz-s">PDF · Photo · Word · Excel<br/>or shared from WhatsApp</div>
+        </div>
+      </div>
+      <input ref={cRef} type="file" accept="image/*" capture="environment" hidden onChange={e=>{addFiles(e.target.files);e.target.value="";}}/>
+      <input ref={fRef} type="file" multiple hidden accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,.docx,.xlsx,.xls,.csv" onChange={e=>{addFiles(e.target.files);e.target.value="";}}/>
+      {files.length>0&&<React.Fragment>
+        <div style={{fontSize:12.5,fontWeight:600,color:"var(--mu)",margin:"10px 0 4px"}}>{files.length} page{files.length>1?"s":""} staged</div>
+        <div className="pg">
+          {files.map((f,i)=><div key={i} className="pt">
+            {prevs[i]?<img src={prevs[i]} alt={"p"+(i+1)}/>:<div style={{height:74,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>{isPdf(f)?"📄":isDocx(f)?"📝":"📊"}</div>}
+            <div className="pt-l">Page {i+1}</div>
+            {svgs[i]&&<div className="pt-s">{fmt(svgs[i].b)}→{fmt(svgs[i].a)}</div>}
+            <button className="pt-r" onClick={()=>rmPage(i)}>✕</button>
+          </div>)}
+          <div className="uz" style={{minHeight:74,padding:8}} onClick={()=>cRef.current.click()}>
+            <div style={{fontSize:20}}>📷</div><div style={{fontSize:10,color:"var(--mu)"}}>Add page</div>
+          </div>
+        </div>
+        <button className="btn bp" style={{marginTop:10}} onClick={()=>extract()}>✨ Extract with AI</button>
+        <button className="btn bg" style={{marginTop:7}} onClick={()=>{setFiles([]);setPrevs([]);setSvgs([]);}}>Clear</button>
+      </React.Fragment>}
+      {err&&<div className="al ae">{err}</div>}
+    </React.Fragment>}
+  </div>;
+}
+
+/* ── FEATURE 4: DETAIL WITH DEEP ANALYSIS ─────────────────── */
+function Detail({doc,folders,onClose,onDeleted,onMoved}){
+  const[busy,setBusy]=useState(false);const[err,setErr]=useState(null);const[cdel,setCdel]=useState(false);
+  const[newFid,setNewFid]=useState(doc.folder_id||"");
+  const pages=(doc.extracted?.pages)||[doc.storage_path];
+  const n=daysTo(doc.expiry_date);const ti=TYPES[doc.doc_type]||"📁";
+  const ex=doc.extracted||{};
+
+  const viewPage=async idx=>{
+    setBusy(true);setErr(null);
+    try{const{data,error}=await sb.storage.from("documents").createSignedUrl(pages[idx],3600);if(error)throw error;window.open(data.signedUrl,"_blank");}
+    catch(e){setErr(e.message);}setBusy(false);
+  };
+  const del=async()=>{
+    setBusy(true);
+    try{await sb.storage.from("documents").remove(pages);const{error}=await sb.from("documents").delete().eq("id",doc.id);if(error)throw error;onDeleted();}
+    catch(e){setErr(e.message);setBusy(false);}
+  };
+  const moveFolder=async()=>{
+    const{error}=await sb.from("documents").update({folder_id:newFid||null}).eq("id",doc.id);
+    if(!error&&onMoved)onMoved();
+  };
+
+  const anFields=[
+    {k:"penalties",l:"⚠️ Penalty clauses",cls:"risk"},
+    {k:"risk_on_expiry",l:"🔴 Risk on expiry",cls:"risk"},
+    {k:"action_required",l:"✅ Action required",cls:"warn"},
+    {k:"compliance_deadline",l:"📅 Compliance deadline",cls:""},
+    {k:"obligations",l:"📌 Key obligations",cls:""},
+    {k:"financial_obligations",l:"💰 Financial obligations",cls:""},
+    {k:"legal_jurisdiction",l:"⚖️ Legal jurisdiction",cls:""},
+    {k:"key_clauses",l:"📝 Key clauses",cls:""},
+    {k:"governing_authority",l:"🏛️ Governing authority",cls:""},
+  ].filter(f=>ex[f.k]);
+
+  return <React.Fragment>
+    {cdel&&<Confirm title="Delete document?" msg="Permanently deletes the document and all its stored files. Cannot be undone." yes="Yes, delete" onYes={()=>{setCdel(false);del();}} onNo={()=>setCdel(false)}/>}
+    <div className="card">
+      <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:12}}>
+        <div style={{fontSize:30,lineHeight:1}}>{ti}</div>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:15,fontWeight:700,wordBreak:"break-word"}}>{doc.title||doc.doc_type||"Document"}</div>
+          <div style={{fontSize:12,color:"var(--mu)",marginTop:2}}>{doc.doc_type}{doc.entities?.name?" · "+doc.entities.name:""}{doc.folder_id&&folders.find(f=>f.id===doc.folder_id)?" · "+folders.find(f=>f.id===doc.folder_id).name:""}</div>
+        </div>
+        <button onClick={onClose} style={{background:"none",border:"none",fontSize:19,cursor:"pointer",color:"var(--mu)",padding:2,lineHeight:1}}>✕</button>
+      </div>
+
+      {/* Core fields */}
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7,fontSize:13}}>
+        {[["Reference",doc.ref_number],["Issuer",doc.issuer],["Holder",doc.holder],["Issue date",doc.issue_date],
+          doc.expiry_date?["Expiry",<span className={ec(n)}>{doc.expiry_date} ({el(n)})</span>]:null,
+          doc.amount!=null?["Amount","₹"+Number(doc.amount).toLocaleString("en-IN")]:null
+        ].filter(Boolean).map(([k,v],i)=><div key={i} style={{background:"var(--sur)",borderRadius:8,padding:"8px 11px"}}>
+          <div style={{fontSize:10,fontWeight:700,color:"var(--mu)",textTransform:"uppercase",letterSpacing:".04em"}}>{k}</div>
+          <div style={{fontWeight:600,marginTop:2}}>{v||"—"}</div>
+        </div>)}
+      </div>
+      {ex.summary&&<div className="al ai" style={{marginTop:9,fontSize:12.5}}>{ex.summary}</div>}
+
+      {/* FEATURE 4 — Deep Analysis Panel */}
+      {anFields.length>0&&<React.Fragment>
+        <div className="div"/>
+        <h3>📊 Document Analysis</h3>
+        <div className="an-grid">
+          {anFields.map(({k,l,cls})=><div key={k} className={"an-cell full"+(cls?" "+cls:"")}>
+            <div className="an-label">{l}</div>
+            <div className="an-val">{ex[k]}</div>
+          </div>)}
+        </div>
+      </React.Fragment>}
+
+      {/* Move to folder */}
+      {folders.length>0&&<React.Fragment>
+        <div className="div"/>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}>
+          <select value={newFid} onChange={e=>setNewFid(e.target.value)} style={{flex:1,fontSize:13,padding:"7px 10px"}}>
+            <option value="">No folder</option>{folders.map(f=><option key={f.id} value={f.id}>{f.icon} {f.name}</option>)}
+          </select>
+          <button className="btn bg bsm" onClick={moveFolder}>Move</button>
+        </div>
+      </React.Fragment>}
+
+      {/* Actions */}
+      <div style={{marginTop:12}}>
+        {pages.length===1?<button className="btn bg" disabled={busy} onClick={()=>viewPage(0)}>📂 Open document</button>
+          :<React.Fragment>
+            <div style={{fontSize:12,color:"var(--mu)",marginBottom:5}}>{pages.length} pages:</div>
+            <div className="brow">{pages.map((_,i)=><button key={i} className="btn bg bsm" disabled={busy} onClick={()=>viewPage(i)}>Page {i+1}</button>)}</div>
+          </React.Fragment>}
+        <button className="btn bg" disabled={busy} style={{marginTop:7}} onClick={()=>dlICS([doc],doc.title||"document")}>📅 Add to Calendar</button>
+        <button className="btn bd" disabled={busy} style={{marginTop:7}} onClick={()=>setCdel(true)}>🗑 Delete</button>
+      </div>
+      {err&&<div className="al ae">{err}</div>}
+    </div>
+  </React.Fragment>;
+}
+
+/* ── FEATURE 6: AI CHAT ────────────────────────────────────── */
+function AIChat({docs,onClose}){
+  const[msgs,setMsgs]=useState([]);const[q,setQ]=useState("");const[busy,setBusy]=useState(false);
+  const endRef=useRef();
+  const SUGGESTIONS=["Which documents expire in the next 30 days?","What are my total insurance premiums?","Do I have any overdue compliance?","What penalties am I exposed to?","List all leases and their expiry dates","Which fire NOCs need renewal soon?"];
+  const send=async txt=>{
+    const question=txt||q;if(!question.trim()||busy)return;
+    setQ("");setMsgs(m=>[...m,{u:1,t:question}]);setBusy(true);
+    try{
+      const res=await AI.chat(question,docs);
+      const ans=res?.candidates?.[0]?.content?.parts?.[0]?.text||"Sorry, I couldn't process that.";
+      setMsgs(m=>[...m,{u:0,t:ans}]);
+    }catch(e){setMsgs(m=>[...m,{u:0,t:"Error: "+(e?.message||"Try again.")}]);}
+    setBusy(false);
+    setTimeout(()=>endRef.current?.scrollIntoView({behavior:"smooth"}),100);
+  };
+  return <div className="chat-panel">
+    <div className="chat-head">
+      <div style={{fontSize:20}}>💬</div>
+      <div style={{flex:1}}>
+        <div style={{fontWeight:700,fontSize:15}}>Ask your documents</div>
+        <div style={{fontSize:11.5,color:"var(--mu)"}}>{docs.length} documents in vault</div>
+      </div>
+      <button className="btn bg bsm" onClick={onClose}>✕ Close</button>
+    </div>
+    <div className="chat-msgs">
+      {msgs.length===0&&<React.Fragment>
+        <div style={{fontSize:13.5,color:"var(--mu)",textAlign:"center",marginTop:20}}>Ask anything about your documents.</div>
+        <div className="sugg">{SUGGESTIONS.map((s,i)=><button key={i} onClick={()=>send(s)}>{s}</button>)}</div>
+      </React.Fragment>}
+      {msgs.map((m,i)=><div key={i} className={"msg "+(m.u?"msg-u":"msg-a")} style={{whiteSpace:"pre-wrap"}}>{m.t}</div>)}
+      {busy&&<div className="msg msg-a"><span className="spin"/>Thinking…</div>}
+      <div ref={endRef}/>
+    </div>
+    <div className="chat-foot">
+      <input type="text" value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} placeholder="Ask about your documents…"/>
+      <button onClick={()=>send()} disabled={busy}>➤</button>
+    </div>
+  </div>;
+}
+
+/* ── FEATURE 7: TIMELINE VIEW ──────────────────────────────── */
+function Timeline({docs,onOpen,onClose}){
+  const upcoming=docs.filter(d=>d.expiry_date).map(d=>({...d,n:daysTo(d.expiry_date)})).filter(d=>d.n!==null&&d.n>=-7&&d.n<=180).sort((a,b)=>a.n-b.n);
+  const grouped={};
+  upcoming.forEach(d=>{
+    const dt=new Date(d.expiry_date+"T00:00:00");
+    const key=dt.toLocaleString("en-IN",{month:"short",year:"numeric"});
+    if(!grouped[key])grouped[key]=[];grouped[key].push(d);
+  });
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+      <h2 style={{marginBottom:0}}>📅 Upcoming Timeline</h2>
+      <button className="btn bg bsm" onClick={onClose}>✕</button>
+    </div>
+    {/* FEATURE 5 — Export all to calendar */}
+    <button className="btn bg bsm" style={{width:"auto",marginBottom:10}} onClick={()=>dlICS(upcoming,"DOCTRACK-all-expiries")}>📅 Export all to Calendar</button>
+    {Object.keys(grouped).length===0&&<div style={{color:"var(--mu)",fontSize:13,textAlign:"center",padding:20}}>No documents expiring in the next 6 months.</div>}
+    {Object.entries(grouped).map(([month,items])=><React.Fragment key={month}>
+      <div style={{fontSize:11,fontWeight:700,color:"var(--tl)",textTransform:"uppercase",letterSpacing:".06em",padding:"10px 0 4px",borderTop:"1px solid var(--brd)"}}>{month}</div>
+      {items.map(d=>{
+        const dt=new Date(d.expiry_date+"T00:00:00");
+        return <div key={d.id} className="tl-item" onClick={()=>onOpen(d)}>
+          <div className="tl-date"><div className="tl-day">{dt.getDate()}</div><div className="tl-mon">{dt.toLocaleString("en",{weekday:"short"})}</div></div>
+          <div className="tl-dot" style={{background:d.n<0?"var(--rd)":d.n<=30?"var(--am)":"var(--gn)"}}/>
+          <div className="tl-cnt">
+            <div className="tl-t">{TYPES[d.doc_type]||"📁"} {d.title||d.doc_type}</div>
+            <div className="tl-s">{d.entities?.name} · <span className={ec(d.n)}>{el(d.n)}</span></div>
+          </div>
+        </div>;
+      })}
+    </React.Fragment>)}
+  </div>;
+}
+
+/* ── VAULT ─────────────────────────────────────────────────── */
+function Vault({docs,entities,folders,onOpen,loading}){
+  const[q,setQ]=useState("");const[ent,setEnt]=useState("");const[band,setBand]=useState("all");const[fid,setFid]=useState("all");
+  const counts=useMemo(()=>{let o=0,s=0,g=0;docs.forEach(d=>{const n=daysTo(d.expiry_date);if(n===null)return;if(n<0)o++;else if(n<=30)s++;else g++;});return{o,s,g,a:docs.length};},[docs]);
+  const shown=useMemo(()=>docs.filter(d=>{
+    const n=daysTo(d.expiry_date);
+    if(band==="o"&&!(n!==null&&n<0))return false;
+    if(band==="s"&&!(n!==null&&n>=0&&n<=30))return false;
+    if(band==="g"&&!(n!==null&&n>30))return false;
+    if(ent&&d.entity_id!==ent)return false;
+    if(fid==="none"&&d.folder_id)return false;
+    if(fid!=="all"&&fid!=="none"&&d.folder_id!==fid)return false;
+    if(q){const h=[d.title,d.doc_type,d.ref_number,d.issuer,d.holder,d.extracted?.summary].join(" ").toLowerCase();if(!h.includes(q.toLowerCase()))return false;}
+    return true;
+  }),[docs,q,ent,band,fid]);
+
+  return <div className="card">
+    <h2>Your Vault</h2>
+    <div className="sg">
+      {[{id:"o",lbl:"Overdue",n:counts.o,cls:"so"},{id:"s",lbl:"≤ 30 days",n:counts.s,cls:"ss"},{id:"g",lbl:"Safe",n:counts.g,cls:"sg2"},{id:"all",lbl:"All docs",n:counts.a,cls:""}].map(s=><div key={s.id} className={"st "+s.cls+(band===s.id?" active":"")} onClick={()=>setBand(band===s.id?"all":s.id)}>
+        <div className="sn">{s.n}</div><div className="sl">{s.lbl}</div>
+      </div>)}
+    </div>
+
+    {/* FEATURE 1 — Folder filter bar */}
+    {folders.length>0&&<div className="folder-bar">
+      <span className={"fb"+(fid==="all"?" active":"")} onClick={()=>setFid("all")}>All</span>
+      <span className={"fb"+(fid==="none"?" active":"")} onClick={()=>setFid("none")}>📭 Unfiled</span>
+      {folders.map(f=><span key={f.id} className={"fb"+(fid===f.id?" active":"")} style={fid===f.id?{}:{borderColor:"transparent"}} onClick={()=>setFid(fid===f.id?"all":f.id)}>{f.icon} {f.name}</span>)}
+    </div>}
+
+    <div className="fr" style={{marginTop:8}}>
+      <input type="search" placeholder="Search title, ref no., issuer…" value={q} onChange={e=>setQ(e.target.value)}/>
+      <select value={ent} onChange={e=>setEnt(e.target.value)} style={{maxWidth:150}}>
+        <option value="">All entities</option>{entities.map(en=><option key={en.id} value={en.id}>{en.name}</option>)}
+      </select>
+    </div>
+
+    {shown.length===0
+      ?<div style={{textAlign:"center",padding:"28px 16px",color:"var(--mu)"}}>
+         {loading?<React.Fragment><span className="spin"/>Loading…</React.Fragment>
+          :docs.length===0?<React.Fragment><div style={{fontSize:34,marginBottom:8}}>📭</div><div style={{fontWeight:700,marginBottom:4,color:"var(--ink2)"}}>Vault is empty</div><div style={{fontSize:13}}>Scan your first document above.</div></React.Fragment>
+          :"No documents match. Clear filters."}
+       </div>
+      :shown.map(d=>{const n=daysTo(d.expiry_date);return <div key={d.id} className="dr" onClick={()=>onOpen(d)}>
+        <div className="di">{TYPES[d.doc_type]||"📁"}</div>
+        <div style={{flex:1,minWidth:0}}>
+          <div className="dt">{d.title||d.doc_type||"Untitled"}</div>
+          <div className="dm">{[d.doc_type,d.entities?.name,d.ref_number].filter(Boolean).join(" · ")}</div>
+        </div>
+        <div className={"de "+(n===null?"en":ec(n))}>{d.expiry_date?<React.Fragment><div>{d.expiry_date}</div><div style={{fontSize:11}}>{el(n)}</div></React.Fragment>:"—"}</div>
+      </div>;})}
+    {docs.length>0&&<div style={{textAlign:"center",fontSize:11,color:"var(--mu2)",marginTop:12,paddingTop:10,borderTop:"1px solid var(--brd)"}}>{docs.length} document{docs.length!==1?"s":""} total</div>}
+  </div>;
+}
+
+/* ── TEAM ─────────────────────────────────────────────────── */
+function Team({entities,currentUid,onClose}){
+  const[ppl,setPpl]=useState(null);const[acc,setAcc]=useState([]);const[err,setErr]=useState(null);const[busy,setBusy]=useState(false);
+  const load=async()=>{
+    const[p,a]=await Promise.all([sb.from("profiles").select("*").order("created_at"),sb.from("entity_access").select("*")]);
+    if(p.error){setErr(p.error.message);return;}if(a.error){setErr(a.error.message);return;}
+    setPpl(p.data||[]);setAcc(a.data||[]);
+  };
+  useEffect(()=>{load();},[]);
+  const setRole=async(uid,role)=>{
+    if(uid===currentUid&&role==="member"){setErr("Cannot remove your own admin role.");return;}
+    const admins=(ppl||[]).filter(p=>p.role==="admin");
+    if(role==="member"&&admins.length===1&&admins[0].user_id===uid){setErr("Cannot remove the only admin.");return;}
+    setBusy(true);setErr(null);
+    const{error}=await sb.from("profiles").update({role}).eq("user_id",uid);
+    if(error)setErr(error.message);else await load();setBusy(false);
+  };
+  const toggleAcc=async(uid,eid,has)=>{
+    setBusy(true);setErr(null);
+    const{error}=has?await sb.from("entity_access").delete().eq("user_id",uid).eq("entity_id",eid):await sb.from("entity_access").insert({user_id:uid,entity_id:eid});
+    if(error)setErr(error.message);else await load();setBusy(false);
+  };
+  if(ppl===null&&!err)return <div className="card"><span className="spin"/>Loading team…</div>;
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
+      <h2 style={{marginBottom:0}}>👥 Team &amp; Access</h2><button className="btn bg bsm" onClick={onClose}>✕</button>
+    </div>
+    <div style={{fontSize:13,color:"var(--mu)",marginBottom:10}}>New staff: they sign up on the login screen, then appear here.</div>
+    {(ppl||[]).map(p=><div key={p.user_id} style={{borderTop:"1px solid var(--brd)",padding:"11px 0"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+        <div style={{fontWeight:600,fontSize:13.5}}>{p.email||p.user_id.slice(0,12)}</div>
+        <select style={{width:"auto",fontSize:12,padding:"5px 8px"}} disabled={busy} value={p.role} onChange={e=>setRole(p.user_id,e.target.value)}>
+          <option value="member">member</option><option value="admin">admin</option>
+        </select>
+      </div>
+      {p.role==="member"&&<div style={{display:"flex",flexWrap:"wrap",gap:5,marginTop:7}}>
+        {entities.map(en=>{const has=acc.some(a=>a.user_id===p.user_id&&a.entity_id===en.id);return <span key={en.id} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"4px 10px",borderRadius:99,fontSize:12,fontWeight:600,cursor:busy?"default":"pointer",background:has?"var(--tl)":"var(--sur2)",color:has?"#fff":"var(--ink2)",border:"1.5px solid "+(has?"var(--tl)":"var(--brd)")}} onClick={()=>!busy&&toggleAcc(p.user_id,en.id,has)}>{has?"✓ ":"+ "}{en.name}</span>;})}
+      </div>}
+    </div>)}
+    {err&&<div className="al ae">{err}</div>}
+    <div className="brow" style={{marginTop:8}}><button className="btn bg" onClick={load} disabled={busy}>↻ Refresh</button><button className="btn bg" onClick={onClose}>Close</button></div>
+  </div>;
+}
+
+/* ── APP ───────────────────────────────────────────────────── */
+function App(){
+  const[ses,setSes]=useState(undefined);const[prof,setProf]=useState(null);const[uid,setUid]=useState(null);
+  const[ents,setEnts]=useState([]);const[docs,setDocs]=useState([]);const[folders,setFolders]=useState([]);
+  const[loading,setLoading]=useState(false);const[lerr,setLerr]=useState(null);
+  const[showSet,setShowSet]=useState(false);const[showTeam,setShowTeam]=useState(false);
+  const[showPlans,setShowPlans]=useState(false);const[showFolders,setShowFolders]=useState(false);
+  const[showChat,setShowChat]=useState(false);const[showTL,setShowTL]=useState(false);
+  const[openDoc,setOpenDoc]=useState(null);const[preloaded,setPreloaded]=useState(null);
+
+  // Register service worker & handle incoming shared files
+  useEffect(()=>{
+    if("serviceWorker"in navigator){
+      navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(()=>{});
+    }
+    // Check if app was opened via Web Share Target
+    if(window.location.search.includes("incoming=1")&&"caches"in window){
+      caches.open("doctrack-share-v1").then(cache=>{
+        cache.match("/incoming-share").then(async resp=>{
+          if(resp){
+            const blob=await resp.blob();
+            const name=decodeURIComponent(resp.headers.get("X-File-Name")||"shared-document");
+            const file=new File([blob],name,{type:blob.type||resp.headers.get("Content-Type")||"application/octet-stream"});
+            setPreloaded(file);cache.delete("/incoming-share");
+          }
+        });
+      }).catch(()=>{});
+      window.history.replaceState({},"",window.location.pathname);
+    }
+  },[]);
+
+  useEffect(()=>{
+    sb.auth.getSession().then(({data})=>setSes(data.session));
+    const{data:sub}=sb.auth.onAuthStateChange((_e,s)=>setSes(s));
+    return()=>sub.subscription.unsubscribe();
+  },[]);
+
+  const load=useCallback(async()=>{
+    setLoading(true);setLerr(null);
+    try{
+      const{data:{user},error:uE}=await sb.auth.getUser();
+      if(uE||!user)throw new Error("Session expired — please sign in again.");
+      setUid(user.id);
+      let{data:pr,error:pE}=await sb.from("profiles").select("*").eq("user_id",user.id).maybeSingle();
+      if(pE)throw pE;
+      if(!pr){
+        const{error:iE}=await sb.from("profiles").insert({user_id:user.id,email:user.email,role:"member",plan:"free"});
+        if(iE)throw iE;pr={user_id:user.id,email:user.email,role:"member",plan:"free"};
+      }
+      setProf(pr);
+      const[e,d,a,f]=await Promise.all([
+        sb.from("entities").select("*").order("name"),
+        sb.from("documents").select("*,entities(name)").order("expiry_date",{ascending:true,nullsFirst:false}),
+        sb.from("entity_access").select("entity_id").eq("user_id",user.id),
+        sb.from("folders").select("*").order("name")
+      ]);
+      const allowed=(a.data||[]).map(x=>x.entity_id);
+      const allEnts=e.data||[];
+      setEnts(pr.role==="admin"?allEnts:allEnts.filter(en=>allowed.includes(en.id)));
+      setDocs(d.data||[]);setFolders(f.data||[]);
+    }catch(e){setLerr((e?.message)||"Failed to load. Check your internet.");}
+    finally{setLoading(false);}
+  },[]);
+
+  useEffect(()=>{if(ses)load();},[ses]);
+
+  if(ses===undefined)return <div style={{textAlign:"center",marginTop:100}}><div style={{fontSize:32,marginBottom:10}}>📋</div><div style={{fontWeight:700,fontSize:18,color:"var(--tl)"}}>DOCTRACK</div><div style={{marginTop:14,color:"var(--mu)"}}><span className="spin"/>Starting…</div></div>;
+  if(!ses)return <Login/>;
+  if(lerr)return <div className="card" style={{marginTop:40}}>
+    <div className="al ae">{lerr}</div>
+    <button className="btn bp" style={{marginTop:10}} onClick={load}>Retry</button>
+    <button className="btn bg" style={{marginTop:7}} onClick={()=>sb.auth.signOut()}>Sign out</button>
+  </div>;
+
+  const isAdmin=prof?.role==="admin";const plan=gp(prof?.plan);
+  const noAccess=prof&&!isAdmin&&ents.length===0&&!loading;
+
+  return <div>
+    {/* Topbar */}
+    <div className="topbar">
+      <div><span className="brand">DOCTRACK</span><span className="brand-sub">{ses.user.email}{isAdmin?" · admin":""}</span></div>
+      <div className="ta">
+        <span className="badge btl" style={{cursor:"pointer"}} onClick={()=>setShowPlans(s=>!s)}>{plan.badge}</span>
+        <button className="btn bg bsm" onClick={()=>setShowTL(s=>!s)}>📅</button>
+        {isAdmin&&<button className="btn bg bsm" onClick={()=>setShowFolders(s=>!s)}>📁</button>}
+        {isAdmin&&<button className="btn bg bsm" onClick={()=>setShowTeam(s=>!s)}>👥</button>}
+        <button className="btn bg bsm" onClick={()=>setShowSet(s=>!s)}>⚙</button>
+        <button className="btn bg bsm" onClick={()=>sb.auth.signOut()}>Exit</button>
+      </div>
+    </div>
+
+    {/* Panels */}
+    {showSet&&<Settings profile={prof} onClose={()=>setShowSet(false)}/>}
+    {showPlans&&<Plans profile={prof} onClose={()=>setShowPlans(false)}/>}
+    {showFolders&&isAdmin&&<FolderManager folders={folders} onClose={()=>setShowFolders(false)} onRefresh={load}/>}
+    {showTeam&&isAdmin&&<Team entities={ents} currentUid={uid} onClose={()=>setShowTeam(false)}/>}
+    {showTL&&<Timeline docs={docs} onOpen={d=>{setOpenDoc(d);setShowTL(false);}} onClose={()=>setShowTL(false)}/>}
+    {openDoc&&<Detail doc={openDoc} folders={folders} onClose={()=>setOpenDoc(null)} onDeleted={()=>{setOpenDoc(null);load();}} onMoved={load}/>}
+
+    {/* Shared file banner */}
+    {preloaded&&<div className="al aw">📨 File received from {preloaded.name||"another app"} — scan it below.</div>}
+
+    {loading&&!prof&&<div className="card" style={{textAlign:"center"}}><span className="spin"/>Loading your vault…</div>}
+    {noAccess&&<div className="card" style={{textAlign:"center",padding:"26px 16px"}}>
+      <div style={{fontSize:32,marginBottom:7}}>🔒</div>
+      <div style={{fontWeight:700,marginBottom:5}}>No entity access yet</div>
+      <div style={{fontSize:13,color:"var(--mu)",marginBottom:12}}>Ask your admin to open Team and grant you access.</div>
+      <button className="btn bg bsm" onClick={load}>↻ Retry</button>
+    </div>}
+    {!noAccess&&prof&&<React.Fragment>
+      <Uploader entities={ents} docs={docs} profile={prof} folders={folders} onSaved={load} preloaded={preloaded} onClearPreload={()=>setPreloaded(null)}/>
+      <Vault docs={docs} entities={ents} folders={folders} onOpen={setOpenDoc} loading={loading}/>
+    </React.Fragment>}
+
+    {/* FEATURE 6 — Floating chat button */}
+    {prof&&!showChat&&<button className="chat-btn" onClick={()=>setShowChat(true)}>💬</button>}
+    {showChat&&<AIChat docs={docs} onClose={()=>setShowChat(false)}/>}
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+<script>
+if("serviceWorker"in navigator){
+  navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(function(){});
+}
+window.addEventListener("DOMContentLoaded",function(){
+  try{
+    var src=document.getElementById("appsrc").textContent;
+    var out=Babel.transform(src,{presets:[["react",{runtime:"classic"}]]}).code;
+    var s=document.createElement("script");s.textContent=out;document.body.appendChild(s);
+  }catch(e){
+    document.getElementById("root").innerHTML='<div style="max-width:500px;margin:60px auto;padding:22px;font-family:sans-serif;color:#B83228;background:#FDF2F0;border-radius:12px"><b>Startup error — send this to your admin:</b><br><br>'+(e&&e.message?e.message:String(e))+'</div>';
+    console.error("DOCTRACK startup:",e);
+  }
+});
+</script>
+</body>
+</html>
