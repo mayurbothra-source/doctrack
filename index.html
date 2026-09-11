@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#0D5C4E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Tokei">
+<title>DOCTRACK · Tokei</title>
+<link rel="manifest" href="./manifest.json">
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#fff;--sur:#F5F7FA;--sur2:#EBF0F5;--brd:#DDE4ED;--brd2:#C5CDD8;
+--ink:#1A2433;--ink2:#374151;--mu:#6B7A8D;--mu2:#9AA5B1;
+--tl:#0D5C4E;--tl2:#0F7060;--tlb:#EAF4F1;--tlr:#B0D4CB;
+--rd:#B83228;--rdb:#FDF2F0;--rdr:#EFB8B3;
+--am:#A86F00;--amb:#FEF9EC;--amr:#EDD48A;
+--gn:#0A7D5E;--gnb:#EEF9F4;--gnr:#A0D9C4;
+--bl:#1D6FA4;--blb:#EDF5FB;--pu:#7C3AED;--pub:#F5F3FF;
+--sh:0 1px 4px rgba(26,36,51,.07),0 2px 8px rgba(26,36,51,.04);
+--shm:0 4px 16px rgba(26,36,51,.10);--r:12px;--rs:8px;}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,'Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(90px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left))}
+.card{background:var(--bg);border-radius:var(--r);box-shadow:var(--sh);padding:18px;margin-top:14px;border:1px solid var(--brd)}
+h2{font-size:17px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
+h3{font-size:13.5px;font-weight:600;color:var(--ink2);margin-bottom:6px}
+label{display:block;font-size:11px;font-weight:700;color:var(--mu);margin:10px 0 3px;text-transform:uppercase;letter-spacing:.05em}
+input,select,button,textarea{font:inherit}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=number],input[type=search],select,textarea{width:100%;padding:10px 13px;border:1.5px solid var(--brd);border-radius:var(--rs);background:var(--bg);color:var(--ink);outline:none}
+input:focus,select:focus{border-color:var(--tl);box-shadow:0 0 0 3px rgba(13,92,78,.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 18px;border:none;border-radius:var(--rs);font-weight:600;font-size:14px;cursor:pointer;width:100%;margin-top:10px;transition:all .15s}
+.bp{background:var(--tl);color:#fff}.bp:hover{background:var(--tl2)}.bp:disabled{opacity:.4}
+.bg{background:transparent;color:var(--tl);border:1.5px solid var(--tlr)}.bg:hover{background:var(--tlb)}
+.bd{background:transparent;color:var(--rd);border:1.5px solid var(--rdr)}
+.bsm{padding:7px 14px;font-size:13px;margin-top:0;width:auto}
+.brow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.brow .btn{flex:1;min-width:80px;margin-top:0}
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px}
+.btl{background:var(--tlb);color:var(--tl)}.bam{background:var(--amb);color:var(--am)}
+.brd2{background:var(--rdb);color:var(--rd)}.bgn{background:var(--gnb);color:var(--gn)}
+.bbl{background:var(--blb);color:var(--bl)}.bpu{background:var(--pub);color:var(--pu)}
+.al{padding:11px 14px;border-radius:var(--rs);font-size:13.5px;line-height:1.5;margin-top:10px}
+.ae{background:var(--rdb);color:var(--rd);border:1px solid var(--rdr)}
+.ao{background:var(--gnb);color:var(--gn);border:1px solid var(--gnr)}
+.aw{background:var(--amb);color:var(--am);border:1px solid var(--amr)}
+.ai{background:var(--tlb);color:var(--tl);border:1px solid var(--tlr)}
+.spin{display:inline-block;width:15px;height:15px;border:2.5px solid var(--tlr);border-top-color:var(--tl);border-radius:50%;animation:sp .7s linear infinite;vertical-align:-3px;margin-right:5px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:10px 0 8px;border-bottom:1px solid var(--brd);flex-wrap:wrap;gap:8px;position:sticky;top:0;background:var(--bg);z-index:60;padding-top:calc(10px + env(safe-area-inset-top))}
+.brand{font-size:18px;font-weight:900;letter-spacing:-.02em;color:var(--tl)}
+.brand em{color:var(--am);font-style:normal;font-size:13px;margin-left:3px}
+.brand-sub{font-size:11px;color:var(--mu);display:block;font-weight:400}
+.ta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--brd);display:flex;z-index:80;padding-bottom:env(safe-area-inset-bottom);padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px 4px;cursor:pointer;color:var(--mu);font-size:10px;font-weight:600;gap:2px;border:none;background:none}
+.bn.on{color:var(--tl)}.bn .bni{font-size:19px;line-height:1}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.st{padding:11px 6px;border-radius:var(--rs);text-align:center;cursor:pointer;border:1.5px solid transparent;background:var(--sur)}
+.st.on{border-color:var(--tl);background:var(--tlb)}
+.sn{font-size:22px;font-weight:800;line-height:1.1}.sl{font-size:10px;font-weight:600;color:var(--mu);margin-top:2px;text-transform:uppercase}
+.so .sn{color:var(--rd)}.ss .sn{color:var(--am)}.sg2 .sn{color:var(--gn)}
+.dr{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-top:1px solid var(--brd);cursor:pointer}
+.dr:first-child{border-top:none}.dr:hover{opacity:.72}
+.di{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;background:var(--sur)}
+.dt{font-size:14px;font-weight:600}.dm{font-size:12px;color:var(--mu);margin-top:2px}
+.de{font-size:12px;font-weight:700;white-space:nowrap;text-align:right}
+.eo{color:var(--rd)}.es{color:var(--am)}.ef{color:var(--gn)}.en{color:var(--mu2)}
+.uz{border:2px dashed var(--brd2);border-radius:var(--r);padding:18px 12px;text-align:center;cursor:pointer;background:var(--sur);transition:all .2s}
+.uz:hover{border-color:var(--tl);background:var(--tlb)}
+.uz-ic{font-size:27px;margin-bottom:4px}.uz-t{font-size:13.5px;font-weight:600}.uz-s{font-size:11px;color:var(--mu)}
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:7px;margin-top:10px}
+.pt{position:relative;border-radius:var(--rs);overflow:hidden;background:var(--sur);border:1.5px solid var(--brd)}
+.pt img{width:100%;height:70px;object-fit:cover;display:block}
+.pt-l{font-size:10px;font-weight:600;color:var(--mu);text-align:center;padding:3px}
+.pt-s{position:absolute;bottom:17px;left:0;right:0;text-align:center;font-size:9px;font-weight:700;color:var(--gn);background:rgba(255,255,255,.9)}
+.pt-r{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(184,50,40,.9);color:#fff;font-size:10px;border:none;cursor:pointer}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:9px}.fg .full{grid-column:1/-1}
+.fr{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.fr input,.fr select{flex:1;min-width:110px;font-size:13px;padding:8px 11px}
+.fbar{display:flex;gap:6px;overflow-x:auto;margin:10px 0 4px;padding-bottom:4px;scrollbar-width:none}
+.fbar::-webkit-scrollbar{display:none}
+.fb{padding:6px 12px;border-radius:99px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;background:var(--sur);color:var(--ink2);border:1.5px solid transparent}
+.fb.on{background:var(--tl);color:#fff}
+.ang{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.anc{background:var(--sur);border-radius:var(--rs);padding:10px 12px}
+.anc.risk{background:var(--rdb)}.anc.warn{background:var(--amb)}
+.anl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mu);margin-bottom:3px}
+.anv{font-size:13px;color:var(--ink2);line-height:1.5}
+.modal-bg{position:fixed;inset:0;background:rgba(26,36,51,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:18px}
+.modal-box{background:var(--bg);border-radius:16px;padding:22px;max-width:360px;width:100%;box-shadow:var(--shm);max-height:85vh;overflow-y:auto}
+.mt{font-size:16px;font-weight:700;margin-bottom:7px}.mb{font-size:13.5px;color:var(--mu);margin-bottom:16px}
+.chat-panel{position:fixed;inset:0;z-index:150;display:flex;flex-direction:column;background:var(--bg)}
+.chat-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--brd);padding-top:calc(14px + env(safe-area-inset-top))}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:85%;padding:10px 13px;border-radius:12px;font-size:13.5px;line-height:1.5;white-space:pre-wrap}
+.msg-u{background:var(--tl);color:#fff;align-self:flex-end}
+.msg-a{background:var(--sur);align-self:flex-start}
+.chat-foot{padding:10px 14px;border-top:1px solid var(--brd);display:flex;gap:8px;padding-bottom:calc(10px + env(safe-area-inset-bottom))}
+.chat-foot input{flex:1;border-radius:99px}
+.chat-foot button{width:40px;height:40px;border-radius:50%;background:var(--tl);color:#fff;border:none;cursor:pointer;flex-shrink:0}
+.chat-btn{position:fixed;bottom:calc(74px + env(safe-area-inset-bottom));right:calc(16px + env(safe-area-inset-right));width:50px;height:50px;border-radius:50%;background:var(--tl);color:#fff;font-size:20px;border:none;cursor:pointer;box-shadow:var(--shm);z-index:90}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sugg button{font-size:12px;padding:5px 11px;border-radius:99px;background:var(--tlb);color:var(--tl);border:1px solid var(--tlr);cursor:pointer}
+.landing{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(24px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));background:linear-gradient(160deg,var(--tlb),var(--bg) 55%)}
+.lbrand{text-align:center;margin-bottom:28px}
+.lbn{font-size:31px;font-weight:900;letter-spacing:-.03em;color:var(--tl)}
+.lbt{color:var(--am);font-size:21px}
+.lbg{font-size:13.5px;color:var(--mu);margin-top:4px}
+.lcards{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;max-width:580px}
+.lcard{background:var(--bg);border-radius:16px;padding:20px 16px;text-align:center;cursor:pointer;border:2px solid var(--brd);box-shadow:var(--sh);transition:all .2s}
+.lcard:hover{border-color:var(--tl);box-shadow:var(--shm);transform:translateY(-2px)}
+.lci{font-size:38px;margin-bottom:8px}.lct{font-size:16px;font-weight:700;margin-bottom:5px}
+.lcd{font-size:12.5px;color:var(--mu);line-height:1.5;margin-bottom:10px}
+.lcf{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--tl);margin-bottom:12px;text-align:left}
+.wiz{display:flex;margin-bottom:18px;border-radius:var(--rs);overflow:hidden}
+.wz{flex:1;padding:8px 4px;text-align:center;font-size:10.5px;font-weight:700;color:var(--mu);background:var(--sur);border-right:1px solid var(--brd)}
+.wz:last-child{border-right:none}.wz.done{background:var(--tl);color:#fff}.wz.cur{background:var(--am);color:#fff}
+.ol-item{display:flex;align-items:center;gap:8px;background:var(--sur);border-radius:var(--rs);padding:8px 12px;margin-top:6px}
+.ol-num{width:22px;height:22px;border-radius:50%;background:var(--tl);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ol-name{flex:1;font-size:13.5px;font-weight:600}
+.perm-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-top:1px solid var(--brd)}
+.perm-row:first-child{border-top:none}.perm-label{font-size:13.5px;color:var(--ink2)}
+.tg{width:44px;height:24px;border-radius:99px;background:var(--brd);border:none;cursor:pointer;position:relative;flex-shrink:0;transition:background .2s}
+.tg.on{background:var(--tl)}
+.tg::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .2s}
+.tg.on::after{transform:translateX(20px)}
+.ls-bar{display:flex;margin:12px 0;border-radius:var(--rs);overflow:hidden;border:1.5px solid var(--brd)}
+.ls-step{flex:1;padding:8px 3px;text-align:center;font-size:9.5px;font-weight:700;color:var(--mu);background:var(--sur);border-right:1px solid var(--brd)}
+.ls-step:last-child{border-right:none}.ls-step.done{background:var(--tl);color:#fff}.ls-step.cur{background:var(--am);color:#fff}
+.ldc{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--brd)}
+.ldc:first-child{border-top:none}.ldc-n{flex:1;font-size:13.5px}
+.med-card{background:var(--sur);border-radius:var(--rs);padding:12px;margin-top:8px}
+.med-n{font-size:14px;font-weight:700}.med-d{font-size:12.5px;color:var(--mu);margin-top:3px}
+.med-t{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.mt-chip{font-size:11.5px;font-weight:700;background:var(--tlb);color:var(--tl);padding:3px 9px;border-radius:99px}
+.ac-item{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--brd)}
+.ac-item:first-child{border-top:none}
+.ac-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.ac-t{font-size:14px;font-weight:600}.ac-s{font-size:12px;color:var(--mu);margin-top:2px}
+.tl-g{font-size:11px;font-weight:700;color:var(--tl);text-transform:uppercase;letter-spacing:.06em;padding:10px 0 4px;border-top:1px solid var(--brd)}
+.tl-row{display:flex;gap:10px;padding:9px 0;border-top:1px solid var(--brd);cursor:pointer}
+.tl-row:first-child{border-top:none}
+.tl-date{min-width:46px;text-align:right;flex-shrink:0}
+.tl-day{font-size:17px;font-weight:800;line-height:1}.tl-mon{font-size:10px;color:var(--mu);text-transform:uppercase}
+.tl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.tl-cnt{flex:1}.tl-t{font-size:13.5px;font-weight:600}.tl-s{font-size:12px;color:var(--mu)}
+.nbell{position:relative;cursor:pointer}
+.nbg{position:absolute;top:-3px;right:-3px;width:15px;height:15px;border-radius:50%;background:var(--rd);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center}
+@media(max-width:460px){.sg{grid-template-columns:repeat(2,1fr)}.fg{grid-template-columns:1fr}.fg .full{grid-column:1}.lcards{grid-template-columns:1fr}.ls-bar{flex-wrap:wrap}.ls-step{min-width:33%}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="appsrc">
+const {useState,useEffect,useRef,useMemo,useCallback}=React;
+const SUPABASE_URL="https://lxnsipefybuorwtsxhlw.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4bnNpcGVmeWJ1b3J3dHN4aGx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI3MTU5NzUsImV4cCI6MjA5ODI5MTk3NX0.iIH1ZRXbUUiPklMOo2akQYipP3BR6h8UtnHVKzlJvOI";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+/* SECTORS */
+const SECTORS={
+  "banking-branch":{n:"Banking — Branch Compliance",i:"🏦",c:"bbl",d:"Branch licences, NOCs, leases, AMCs, RBI compliance"},
+  "banking-loans":{n:"Banking — Loan Processing",i:"💳",c:"bpu",d:"Borrower documents, loan file workflow, verification"},
+  "healthcare":{n:"Healthcare",i:"🏥",c:"brd2",d:"NABH, NABL, AERB, clinical licences, staff registrations"},
+  "manufacturing":{n:"Manufacturing",i:"🏭",c:"bam",d:"PCB consents, factory licence, ISO, BIS, equipment certs"},
+  "legal":{n:"Legal & Professional",i:"⚖️",c:"btl",d:"Bar Council, client compliance, matters, filings"},
+  "general":{n:"General Business",i:"🏢",c:"bgn",d:"All standard business compliance documents"}
+};
+
+/* DOCUMENT TYPES by sector */
+const BASE_TYPES={"Insurance Policy":"🛡️","Lease Agreement":"🔑","AMC":"🔧","Invoice":"🧾","Work Order":"📄","Trade License":"📋","Fire NOC":"🔥","Other":"📁"};
+const PERSONAL_TYPES={"Driving License":"🪪","Vehicle RC":"🚗","PUC Certificate":"💨","Insurance Policy":"🛡️","Mediclaim Policy":"🏥","Prescription":"💊","Medical Report":"🔬","Passport":"📕","Visa":"✈️","PAN Card":"🪪","Aadhaar Card":"🆔","Property Document":"🏠","Loan Document":"🏦","School Fee Receipt":"🎓","Warranty":"📦","Bill / Invoice":"🧾","Other":"📁"};
+const SECTOR_TYPES={
+  "banking-branch":{...BASE_TYPES,"RBI Certificate":"🏛️","CERSAI Registration":"📊","Branch Licence":"🏦","IT Security Audit":"🔒","Statutory Audit":"📑","Fair Practices Certificate":"⚖️"},
+  "banking-loans":{"Loan Agreement":"📝","KYC Document":"🪪","Income Proof":"💰","Property Deed":"🏠","Bank Statement":"🏦","Sanction Letter":"✅","Security Deed":"🔐","Guarantor Document":"🤝","Valuation Report":"📊","Other":"📁"},
+  "healthcare":{...BASE_TYPES,"NABH Accreditation":"🏅","NABL Accreditation":"🔬","Clinical Establishment Reg":"🏥","Drug Licence":"💊","PCPNDT Registration":"📋","AERB Licence":"☢️","Biomedical Waste Auth":"♻️","Medical Council Reg":"👨‍⚕️","Equipment Certificate":"🩺"},
+  "manufacturing":{...BASE_TYPES,"PCB Consent (CTO)":"🌱","PCB Consent (CTE)":"🌿","Factory Licence":"🏭","Boiler Certificate":"♨️","Electrical Safety Cert":"⚡","ISO Certificate":"🏅","BIS Certificate":"✅","Hazardous Waste Auth":"⚠️","Import/Export Licence":"🚢"},
+  "legal":{...BASE_TYPES,"Bar Council Enrolment":"⚖️","Firm Registration":"🏛️","Professional Indemnity":"🛡️","Court Filing":"📜","Client Agreement":"🤝","Power of Attorney":"✍️","Matter Document":"📁"},
+  "general":{...BASE_TYPES,"GST Registration":"📊","Shop & Establishment":"🏪","PF Registration":"👥","ESI Registration":"🏥","Contract":"📝"}
+};
+const allTypes=(sector,acct)=>acct==="individual"?PERSONAL_TYPES:(SECTOR_TYPES[sector]||SECTOR_TYPES.general);
+
+/* PLANS */
+const IND_PLANS={free:{n:"Free",b:"FREE",docs:25,p:"₹0",note:"forever"},premium:{n:"Premium",b:"PREMIUM",docs:500,p:"₹299",note:"/mo"},family:{n:"Family",b:"FAMILY",docs:2000,p:"₹499",note:"/mo"}};
+const ORG_PLANS={starter:{n:"Starter",b:"STARTER",docs:500,users:5,p:"₹2,999",note:"/mo"},pro:{n:"Professional",b:"PRO",docs:99999,users:20,p:"₹7,999",note:"/mo"},ent:{n:"Enterprise",b:"ENTERPRISE",docs:99999,users:999,p:"₹19,999",note:"/mo"}};
+const gp=(p,t)=>t==="corporate"?(ORG_PLANS[p]||ORG_PLANS.starter):(IND_PLANS[p]||IND_PLANS.free);
+
+/* DEFAULT PERMISSIONS */
+const DEF_PERMS={docs_upload:true,docs_view:"own",docs_delete:false,team_manage:false,settings_manage:false,audit_view:false,loans_manage:false};
+const PERM_LABELS={docs_upload:"Upload documents",docs_delete:"Delete documents",team_manage:"Manage team & roles",settings_manage:"Manage organisation settings",audit_view:"View audit log",loans_manage:"Manage loan files"};
+
+/* AI ENGINE */
+const AI={
+  model:"gemini-2.5-flash",provider:"gemini",mode:null,
+  getKey:()=>localStorage.getItem("tokei_key")||"",
+  setKey:k=>localStorage.setItem("tokei_key",k.trim()),
+  resetMode:()=>{AI.mode=null;},
+  prompt(types,isPersonal){
+    return `You are a comprehensive document intelligence engine. Analyse this document and extract EVERYTHING actionable.
+Return ONLY valid JSON (no markdown fences) with these keys:
+{
+"doc_type":"one of: ${Object.keys(types).join(", ")}",
+"title":"short descriptive title",
+"issuer":"issuing authority/company/doctor/hospital",
+"holder":"person or company it belongs to",
+"ref_number":"main reference/policy/licence/prescription number",
+"issue_date":"YYYY-MM-DD","expiry_date":"YYYY-MM-DD","amount":number_or_null,
+"summary":"one clear sentence",
+"penalties":"exact penalty clauses, fines, legal consequences with amounts. null if none",
+"compliance_deadline":"how early renewal must start; lead time needed. null if n/a",
+"obligations":"specific obligations the holder must fulfil. null if none",
+"risk_on_expiry":"legal/financial consequences if this lapses, cite Indian law if visible. null if not stated",
+"action_required":"the precise next action and by when. null if none",
+"financial_obligations":"recurring costs, EMIs, escalations, premium schedule. null if none",
+"legal_jurisdiction":"governing law, applicable acts, jurisdiction, arbitration. null if not stated",
+"key_clauses":"exclusions, limitations, sub-limits, co-pay, deductibles, lock-in. null if none",
+"governing_authority":"regulator (IRDAI, RBI, RTO, PCB, NABH, Bar Council, etc). null if n/a",
+"actions":[
+  {"title":"what to do","action_type":"medicine|test|appointment|payment|deadline|inspection|renewal|task",
+   "due_date":"YYYY-MM-DD or null","due_time":"HH:MM or null",
+   "recurrence":"DAILY|WEEKLY|MONTHLY|YEARLY or null","recurrence_count":number_or_null,
+   "amount":number_or_null,"priority":"low|medium|high|critical","notes":"dosage/instructions/details"}
+]${isPersonal?`,
+"medicines":[{"name":"medicine name","dosage":"e.g. 500mg","frequency":"e.g. twice daily","timing":"e.g. after meals","duration_days":number_or_null,"times":["08:00","20:00"]}],
+"tests_advised":[{"name":"test name","due_after_days":number_or_null,"notes":"fasting required etc"}],
+"followup_date":"YYYY-MM-DD or null"`:""}
+}
+CRITICAL RULES:
+- Indian dates are DD/MM/YYYY — convert to YYYY-MM-DD.
+- For prescriptions: extract EVERY medicine with exact dosage, frequency and timing. Convert "twice daily" to times ["08:00","20:00"], "thrice daily" to ["08:00","14:00","20:00"], "once daily" to ["08:00"], "at bedtime" to ["22:00"].
+- For any document: extract EVERY deadline, payment date, notice period, renewal date, inspection date as a separate action.
+- For notice periods (e.g. "90 days notice before expiry"), calculate the actual date and create an action.
+- Never invent data. Use null when not present.`;
+  },
+  parse(d){
+    let t=((d?.candidates?.[0]?.content?.parts?.[0]?.text)||"");
+    t=t.replace(/```json|```/g,"").trim();
+    if(!t) throw new Error("AI returned nothing. Try a clearer, well-lit photo.");
+    try{return JSON.parse(t);}catch(_){throw new Error("AI could not read this document. Ensure all text is visible and well-lit.");}
+  },
+  async callServer(parts){
+    const{data,error}=await sb.functions.invoke("ai-extract",{body:{parts}});
+    if(error)throw new Error("edge:"+(error.message||"unavailable"));
+    if(data?.error)throw new Error("edge:"+data.error);
+    return AI.parse(data);
+  },
+  async callBrowser(parts){
+    const k=AI.getKey();
+    if(!k)throw new Error("No AI key. Open Settings and add your Gemini API key.");
+    const r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/"+AI.model+":generateContent?key="+k,
+      {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts}]})});
+    if(!r.ok){const t=await r.text();throw new Error("Gemini "+r.status+": "+t.slice(0,140));}
+    return AI.parse(await r.json());
+  },
+  async call(parts){
+    if(AI.mode==="browser")return AI.callBrowser(parts);
+    try{const o=await AI.callServer(parts);AI.mode="server";return o;}
+    catch(e){if(String(e.message).startsWith("edge:")&&AI.getKey()){AI.mode="browser";return AI.callBrowser(parts);}throw e;}
+  },
+  async extractFiles(fp,types,isP){
+    const note=fp.length>1?`These ${fp.length} images are pages of ONE document. Combine all.\n`:"";
+    return AI.call([{text:note+AI.prompt(types,isP)}].concat(fp));
+  },
+  async extractText(text,kind,types,isP){
+    return AI.call([{text:"Content from "+kind+":\n"+AI.prompt(types,isP)},{text:text.slice(0,100000)}]);
+  },
+  async chat(q,docs,acts,ctxName){
+    const dctx=docs.slice(0,50).map(d=>`[${d.doc_type}] ${d.title||""} | Ref:${d.ref_number||"-"} | Expiry:${d.expiry_date||"-"} | Amt:${d.amount?"Rs"+d.amount:"-"} | ${d.extracted?.summary||""} | Risk:${d.extracted?.risk_on_expiry||"-"} | Penalty:${d.extracted?.penalties||"-"}`).join("\n");
+    const actx=(acts||[]).slice(0,30).map(a=>`[${a.action_type}] ${a.title} due ${a.due_date||"-"} (${a.status})`).join("\n");
+    return AI.call([{text:`You are the document intelligence assistant for ${ctxName}.\n\nDOCUMENTS (${docs.length}):\n${dctx}\n\nPENDING ACTIONS:\n${actx}\n\nQuestion: ${q}\n\nAnswer specifically and concisely. Cite document titles. Use Indian Rupee formatting. If data is absent, say so plainly.`}]);
+  }
+};
+
+/* HELPERS */
+const fmt=b=>b<1024?b+"B":b<1048576?Math.round(b/1024)+"KB":+(b/1048576).toFixed(1)+"MB";
+const toB64=f=>new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result.split(",")[1]);x.onerror=()=>j(new Error("Read fail"));x.readAsDataURL(f);});
+const toURL=f=>new Promise((r,j)=>{const x=new FileReader();x.onload=e=>r(e.target.result);x.onerror=()=>j(new Error("Read fail"));x.readAsDataURL(f);});
+const toAB=f=>new Promise((r,j)=>{const x=new FileReader();x.onload=()=>r(x.result);x.onerror=()=>j(new Error("Read fail"));x.readAsArrayBuffer(f);});
+const daysTo=d=>{if(!d)return null;const e=new Date(d+"T00:00:00");const t=new Date();t.setHours(0,0,0,0);return Math.round((e-t)/86400000);};
+const ec=n=>n===null?"":n<0?"eo":n<=30?"es":"ef";
+const el=n=>n===null?"no expiry":n<0?(-n)+"d overdue":n===0?"due today":n+"d left";
+const isImg=f=>f.type.startsWith("image/")||(!f.type&&/\.(jpg|jpeg|png|webp|heic|heif)$/i.test(f.name));
+const isPdf=f=>f.type==="application/pdf"||(!f.type&&f.name.toLowerCase().endsWith(".pdf"));
+const isDocx=f=>f.name.toLowerCase().endsWith(".docx");
+const isXlsx=f=>/\.(xlsx|xls|csv)$/i.test(f.name);
+const netChk=()=>{if(typeof navigator!="undefined"&&navigator.onLine===false)throw new Error("No internet. Check your connection.");};
+const inr=n=>n==null?"—":"₹"+Number(n).toLocaleString("en-IN");
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10);};
+const today=()=>new Date().toISOString().slice(0,10);
+
+/* 3-PASS COMPRESSION */
+const compress=async f=>{
+  if(!isImg(f)||f.size<200*1024)return{file:f,sv:null};
+  const run=q=>new Promise(res=>{
+    const u=URL.createObjectURL(f);const img=new Image();
+    img.onload=()=>{try{
+      const M=1200;let{width:w,height:h}=img;
+      if(Math.max(w,h)>M){const s=M/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
+      const c=document.createElement("canvas");c.width=w;c.height=h;
+      c.getContext("2d").drawImage(img,0,0,w,h);URL.revokeObjectURL(u);c.toBlob(res,"image/jpeg",q);
+    }catch(_){URL.revokeObjectURL(u);res(null);}};
+    img.onerror=()=>{URL.revokeObjectURL(u);res(null);};img.src=u;});
+  let b=await run(0.72);
+  if(b&&b.size>400*1024)b=await run(0.60)||b;
+  if(b&&b.size>250*1024)b=await run(0.48)||b;
+  if(!b||b.size>=f.size)return{file:f,sv:null};
+  return{file:new File([b],f.name.replace(/\.\w+$/,"")+".jpg",{type:"image/jpeg"}),sv:{b:f.size,a:b.size}};
+};
+
+/* ICS CALENDAR with RRULE */
+const icsDate=d=>d.replace(/-/g,"");
+const makeICS=(items)=>{
+  const ev=items.map((it,i)=>{
+    const uid="tokei-"+Date.now()+"-"+i;
+    const dt=icsDate(it.date);
+    let rr="";
+    if(it.recur){
+      rr="RRULE:FREQ="+it.recur;
+      if(it.count)rr+=";COUNT="+it.count;
+      rr+="\n";
+    }
+    let dts,dte;
+    if(it.time){
+      const t=it.time.replace(":","")+"00";
+      dts="DTSTART:"+dt+"T"+t+"\n";
+      const hh=String(Math.min(23,parseInt(it.time.slice(0,2))+1)).padStart(2,"0");
+      dte="DTEND:"+dt+"T"+hh+it.time.slice(3,5)+"00\n";
+    }else{
+      dts="DTSTART;VALUE=DATE:"+dt+"\n";dte="DTEND;VALUE=DATE:"+dt+"\n";
+    }
+    const alarms=(it.alarms||["-P1D"]).map(a=>"BEGIN:VALARM\nTRIGGER:"+a+"\nACTION:DISPLAY\nDESCRIPTION:"+it.title.replace(/[,;\n]/g," ")+"\nEND:VALARM").join("\n");
+    return "BEGIN:VEVENT\nUID:"+uid+"\nSUMMARY:"+it.title.replace(/[,;\n]/g," ")+"\n"+dts+dte+rr+"DESCRIPTION:"+(it.desc||"").replace(/[,;\n]/g," ")+"\n"+alarms+"\nEND:VEVENT";
+  });
+  return "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//DOCTRACK Tokei//EN\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\nX-WR-CALNAME:DOCTRACK Tokei\nX-WR-TIMEZONE:Asia/Kolkata\n"+ev.join("\n")+"\nEND:VCALENDAR";
+};
+const dlICS=(items,name)=>{
+  if(!items.length){alert("Nothing to add to calendar.");return;}
+  const b=new Blob([makeICS(items)],{type:"text/calendar;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=(name||"tokei")+".ics";a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+};
+const docToICS=d=>{
+  const out=[];
+  if(d.expiry_date)out.push({date:d.expiry_date,title:(d.title||d.doc_type)+" expires",desc:"Ref: "+(d.ref_number||"-"),alarms:["-P30D","-P7D","-P1D"]});
+  ((d.extracted&&d.extracted.actions)||[]).forEach(a=>{
+    if(a.due_date)out.push({date:a.due_date,time:a.due_time,title:a.title,desc:a.notes||"",recur:a.recurrence,count:a.recurrence_count,alarms:["-PT30M"]});
+  });
+  return out;
+};
+const actionsToICS=acts=>acts.filter(a=>a.due_date).map(a=>({
+  date:a.due_date,time:a.due_time,title:a.title,desc:a.notes||"",
+  recur:a.recurrence,count:a.recurrence_count,alarms:a.action_type==="medicine"?["-PT15M"]:["-P1D"]
+}));
+
+/* BUILD ACTIONS from AI extraction */
+const buildActions=(fields,isPersonal)=>{
+  const out=[];
+  (fields.actions||[]).forEach(a=>{
+    if(!a.title)return;
+    out.push({title:a.title,action_type:a.action_type||"task",due_date:a.due_date||null,due_time:a.due_time||null,
+      recurrence:a.recurrence||null,recurrence_count:a.recurrence_count||null,amount:a.amount||null,
+      priority:a.priority||"medium",notes:a.notes||null});
+  });
+  if(isPersonal){
+    (fields.medicines||[]).forEach(m=>{
+      const times=(m.times&&m.times.length)?m.times:["08:00"];
+      times.forEach(t=>{
+        out.push({title:"Take "+m.name+(m.dosage?" ("+m.dosage+")":""),action_type:"medicine",
+          due_date:today(),due_time:t,recurrence:"DAILY",recurrence_count:m.duration_days||null,
+          priority:"high",notes:[m.frequency,m.timing].filter(Boolean).join(" · ")});
+      });
+      if(m.duration_days)out.push({title:"Refill "+m.name,action_type:"task",
+        due_date:addDays(new Date(),Math.max(1,m.duration_days-3)),priority:"medium",notes:"Course ends in 3 days"});
+    });
+    (fields.tests_advised||[]).forEach(t=>{
+      out.push({title:"Test: "+t.name,action_type:"test",
+        due_date:t.due_after_days?addDays(new Date(),t.due_after_days):null,
+        priority:"high",notes:t.notes||null});
+    });
+    if(fields.followup_date)out.push({title:"Follow-up appointment",action_type:"appointment",
+      due_date:fields.followup_date,priority:"high",notes:"With "+(fields.issuer||"doctor")});
+  }
+  if(fields.expiry_date&&!out.some(a=>a.action_type==="renewal"))
+    out.push({title:"Renew "+(fields.title||fields.doc_type||"document"),action_type:"renewal",
+      due_date:fields.expiry_date,priority:"high",notes:fields.compliance_deadline||null});
+  return out;
+};
+
+/* CONFIRM MODAL */
+function Confirm({title,msg,yes="Delete",onYes,onNo}){
+  return <div className="modal-bg" onClick={onNo}><div className="modal-box" onClick={e=>e.stopPropagation()}>
+    <div className="mt">{title}</div><div className="mb">{msg}</div>
+    <div className="brow"><button className="btn bd" onClick={onYes}>{yes}</button><button className="btn bg" onClick={onNo}>Cancel</button></div>
+  </div></div>;
+}
+
+/* ══ LANDING PAGE ══ */
+function Landing({onPick}){
+  return <div className="landing">
+    <div className="lbrand">
+      <div className="lbn">DOCTRACK <span className="lbt">· Tokei</span></div>
+      <div className="lbg">Document Intelligence Platform</div>
+    </div>
+    <div className="lcards">
+      <div className="lcard" onClick={()=>onPick("individual")}>
+        <div className="lci">👤</div>
+        <div className="lct">Personal</div>
+        <div className="lcd">For individuals and families</div>
+        <div className="lcf">
+          <span>✓ Personal document vault</span>
+          <span>✓ Prescription → medicine reminders</span>
+          <span>✓ Licence &amp; insurance alerts</span>
+          <span>✓ Calendar sync</span>
+        </div>
+        <button className="btn bp">Get started free</button>
+      </div>
+      <div className="lcard" onClick={()=>onPick("corporate")}>
+        <div className="lci">🏢</div>
+        <div className="lct">Organisation</div>
+        <div className="lcd">For companies and institutions</div>
+        <div className="lcf">
+          <span>✓ Build your own hierarchy</span>
+          <span>✓ Custom roles &amp; permissions</span>
+          <span>✓ Sector compliance packs</span>
+          <span>✓ Audit trail &amp; team access</span>
+        </div>
+        <button className="btn bp">Set up organisation</button>
+      </div>
+    </div>
+    <div style={{marginTop:26,fontSize:12,color:"var(--mu)",textAlign:"center",maxWidth:420}}>
+      Banking · Healthcare · Manufacturing · Legal · General Business<br/>
+      <span style={{fontSize:11}}>AI reads your documents, extracts every deadline, and never lets you miss one.</span>
+    </div>
+  </div>;
+}
+
+/* ══ AUTH ══ */
+function Auth({acctType,onBack}){
+  const[em,setEm]=useState("");const[pw,setPw]=useState("");const[nm,setNm]=useState("");
+  const[mode,setMode]=useState("up");const[msg,setMsg]=useState(null);const[busy,setBusy]=useState(false);
+  const go=async()=>{
+    if(!em.trim()){setMsg({e:1,m:"Enter your email."});return;}
+    setBusy(true);setMsg(null);
+    if(mode==="rst"){
+      const{error}=await sb.auth.resetPasswordForEmail(em.trim(),{redirectTo:window.location.href});
+      setBusy(false);setMsg(error?{e:1,m:error.message}:{e:0,m:"Reset link sent — check your inbox."});return;
+    }
+    if(mode==="up"&&pw.length<8){setBusy(false);setMsg({e:1,m:"Password must be at least 8 characters."});return;}
+    if(mode==="up"){
+      const{data,error}=await sb.auth.signUp({email:em.trim(),password:pw});
+      setBusy(false);
+      if(error){setMsg({e:1,m:error.message.includes("Email not confirmed")?"Email confirmation is on. In Supabase → Authentication → Providers → Email, turn OFF Confirm email.":error.message});return;}
+      if(data.user){
+        localStorage.setItem("tokei_pending_type",acctType);
+        localStorage.setItem("tokei_pending_name",nm);
+        setMsg({e:0,m:"Account created. Tap Sign in to continue."});setMode("in");
+      }
+      return;
+    }
+    const{error}=await sb.auth.signInWithPassword({email:em.trim(),password:pw});
+    setBusy(false);
+    if(error)setMsg({e:1,m:error.message.includes("Email not confirmed")?"Email confirmation required. Ask admin to disable it in Supabase → Authentication → Providers → Email.":error.message});
+  };
+  const ok=e=>{if(e.key==="Enter"&&!busy)go();};
+  const isCorp=acctType==="corporate";
+  return <div className="landing">
+    <div style={{maxWidth:420,width:"100%"}}>
+      <div className="lbrand" style={{marginBottom:18}}>
+        <div className="lbn" style={{fontSize:25}}>DOCTRACK <span className="lbt" style={{fontSize:17}}>· Tokei</span></div>
+        <div className="lbg">{isCorp?"🏢 Organisation Account":"👤 Personal Account"}</div>
+      </div>
+      <div className="card" style={{marginTop:0}}>
+        {mode!=="rst"&&<React.Fragment>
+          {mode==="up"&&<React.Fragment>
+            <label>{isCorp?"Your full name":"Your name"}</label>
+            <input type="text" value={nm} onChange={e=>setNm(e.target.value)} onKeyDown={ok} placeholder="e.g. Mayur Bothra"/>
+          </React.Fragment>}
+          <label>Email</label>
+          <input type="email" value={em} onChange={e=>setEm(e.target.value)} onKeyDown={ok} placeholder="you@company.com"/>
+          <label>Password</label>
+          <input type="password" value={pw} onChange={e=>setPw(e.target.value)} onKeyDown={ok} placeholder="At least 8 characters"/>
+          <button className="btn bp" disabled={busy} onClick={go}>{busy?<React.Fragment><span className="spin"/>Please wait…</React.Fragment>:mode==="up"?"Create account":"Sign in"}</button>
+          <button className="btn bg" style={{marginTop:7}} onClick={()=>{setMode(mode==="up"?"in":"up");setMsg(null);}}>
+            {mode==="up"?"Already have an account? Sign in":"New here? Create account"}
+          </button>
+          <div style={{textAlign:"center",marginTop:10}}>
+            <a href="#" style={{fontSize:12,color:"var(--mu)"}} onClick={e=>{e.preventDefault();setMode("rst");setMsg(null);}}>Forgot password?</a>
+          </div>
+        </React.Fragment>}
+        {mode==="rst"&&<React.Fragment>
+          <label>Email</label><input type="email" value={em} onChange={e=>setEm(e.target.value)} onKeyDown={ok} autoFocus/>
+          <button className="btn bp" disabled={busy} onClick={go}>{busy?"Sending…":"Send reset link"}</button>
+          <button className="btn bg" style={{marginTop:7}} onClick={()=>{setMode("in");setMsg(null);}}>Back</button>
+        </React.Fragment>}
+        {msg&&<div className={"al "+(msg.e?"ae":"ao")}>{msg.m}</div>}
+      </div>
+      <button className="btn bg" style={{marginTop:12}} onClick={onBack}>← Back</button>
+    </div>
+  </div>;
+}
+
+/* ══ ORG SETUP WIZARD ══ */
+function OrgWizard({user,onDone}){
+  const[step,setStep]=useState(1);
+  const[orgName,setOrgName]=useState("");
+  const[sector,setSector]=useState("general");
+  const[levels,setLevels]=useState([{n:"Head Office"},{n:"Branch"}]);
+  const[newLvl,setNewLvl]=useState("");
+  const[roles,setRoles]=useState([
+    {name:"Administrator",perms:{...DEF_PERMS,docs_view:"all",docs_delete:true,team_manage:true,settings_manage:true,audit_view:true,loans_manage:true}},
+    {name:"Manager",perms:{...DEF_PERMS,docs_view:"all",docs_delete:true,audit_view:true,loans_manage:true}},
+    {name:"Staff",perms:{...DEF_PERMS,docs_view:"own"}}
+  ]);
+  const[newRole,setNewRole]=useState("");
+  const[unitName,setUnitName]=useState("");
+  const[busy,setBusy]=useState(false);const[err,setErr]=useState(null);
+
+  const addLevel=()=>{if(!newLvl.trim())return;setLevels([...levels,{n:newLvl.trim()}]);setNewLvl("");};
+  const rmLevel=i=>setLevels(levels.filter((_,j)=>j!==i));
+  const addRole=()=>{if(!newRole.trim())return;setRoles([...roles,{name:newRole.trim(),perms:{...DEF_PERMS}}]);setNewRole("");};
+  const rmRole=i=>setRoles(roles.filter((_,j)=>j!==i));
+  const togglePerm=(ri,pk)=>{
+    const r=[...roles];
+    if(pk==="docs_view"){r[ri].perms.docs_view=r[ri].perms.docs_view==="all"?"own":"all";}
+    else r[ri].perms[pk]=!r[ri].perms[pk];
+    setRoles(r);
+  };
+
+  const finish=async()=>{
+    if(!orgName.trim()){setErr("Enter your organisation name.");setStep(1);return;}
+    setBusy(true);setErr(null);
+    try{
+      const{data:org,error:oe}=await sb.from("organisations").insert({name:orgName.trim(),sector,created_by:user.id,plan:"starter"}).select().single();
+      if(oe)throw oe;
+      const lvlRows=levels.map((l,i)=>({org_id:org.id,level_number:i+1,level_name:l.n}));
+      const{data:lvls,error:le}=await sb.from("org_levels").insert(lvlRows).select();
+      if(le)throw le;
+      const roleRows=roles.map(r=>({org_id:org.id,name:r.name,permissions:r.perms}));
+      const{data:rls,error:re}=await sb.from("custom_roles").insert(roleRows).select();
+      if(re)throw re;
+      const topLvl=(lvls||[]).sort((a,b)=>a.level_number-b.level_number)[0];
+      const{data:unit,error:ue}=await sb.from("org_units").insert({org_id:org.id,level_id:topLvl.id,name:unitName.trim()||orgName.trim()}).select().single();
+      if(ue)throw ue;
+      const adminRole=(rls||[]).find(r=>r.name==="Administrator")||rls[0];
+      const{error:me}=await sb.from("org_members").insert({org_id:org.id,user_id:user.id,unit_id:unit.id,role_id:adminRole?.id,is_org_admin:true});
+      if(me)throw me;
+      const{error:pe}=await sb.from("profiles").update({account_type:"corporate",org_id:org.id,role:"admin",plan:"starter"}).eq("user_id",user.id);
+      if(pe)throw pe;
+      await sb.from("audit_log").insert({org_id:org.id,user_id:user.id,user_email:user.email,action:"organisation_created",entity_type:"organisation",entity_id:org.id,details:{name:orgName,sector}});
+      onDone();
+    }catch(e){setErr(e.message||"Setup failed. Try again.");setBusy(false);}
+  };
+
+  return <div className="wrap" style={{maxWidth:560}}>
+    <div className="lbrand" style={{marginTop:20,marginBottom:18}}>
+      <div className="lbn" style={{fontSize:24}}>DOCTRACK <span className="lbt" style={{fontSize:16}}>· Tokei</span></div>
+      <div className="lbg">Set up your organisation</div>
+    </div>
+    <div className="wiz">
+      {["Organisation","Hierarchy","Roles","Finish"].map((s,i)=>
+        <div key={i} className={"wz "+(step>i+1?"done":step===i+1?"cur":"")}>{i+1}. {s}</div>)}
+    </div>
+
+    {step===1&&<div className="card" style={{marginTop:0}}>
+      <h2>Your organisation</h2>
+      <label>Organisation name</label>
+      <input type="text" value={orgName} onChange={e=>setOrgName(e.target.value)} placeholder="e.g. Sunrise Hospitals Pvt Ltd"/>
+      <label style={{marginTop:14}}>Industry sector</label>
+      <div style={{display:"grid",gap:8,marginTop:4}}>
+        {Object.entries(SECTORS).map(([k,s])=>
+          <div key={k} onClick={()=>setSector(k)} style={{display:"flex",gap:10,alignItems:"center",padding:"10px 12px",borderRadius:8,cursor:"pointer",border:"1.5px solid "+(sector===k?"var(--tl)":"var(--brd)"),background:sector===k?"var(--tlb)":"var(--bg)"}}>
+            <span style={{fontSize:22}}>{s.i}</span>
+            <div style={{flex:1}}>
+              <div style={{fontSize:13.5,fontWeight:600}}>{s.n}</div>
+              <div style={{fontSize:11.5,color:"var(--mu)"}}>{s.d}</div>
+            </div>
+            {sector===k&&<span style={{color:"var(--tl)",fontWeight:700}}>✓</span>}
+          </div>)}
+      </div>
+      <button className="btn bp" onClick={()=>{if(!orgName.trim()){setErr("Enter organisation name");return;}setErr(null);setStep(2);}}>Continue →</button>
+      {err&&<div className="al ae">{err}</div>}
+    </div>}
+
+    {step===2&&<div className="card" style={{marginTop:0}}>
+      <h2>Build your hierarchy</h2>
+      <div className="al ai" style={{marginTop:0,fontSize:12.5}}>Define your organisation levels from top to bottom. Example: Head Office → Region → Branch → Department.</div>
+      {levels.map((l,i)=><div key={i} className="ol-item">
+        <div className="ol-num">{i+1}</div>
+        <div className="ol-name">{l.n}</div>
+        {levels.length>1&&<button className="btn bd bsm" onClick={()=>rmLevel(i)}>✕</button>}
+      </div>)}
+      <div style={{display:"flex",gap:7,marginTop:10}}>
+        <input type="text" value={newLvl} onChange={e=>setNewLvl(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addLevel()} placeholder="e.g. Department" style={{flex:1}}/>
+        <button className="btn bg bsm" onClick={addLevel}>+ Add</button>
+      </div>
+      <label style={{marginTop:16}}>Name your first {levels[0]?.n||"unit"}</label>
+      <input type="text" value={unitName} onChange={e=>setUnitName(e.target.value)} placeholder={orgName||"e.g. Mumbai Head Office"}/>
+      <div className="brow">
+        <button className="btn bg" onClick={()=>setStep(1)}>← Back</button>
+        <button className="btn bp" onClick={()=>setStep(3)}>Continue →</button>
+      </div>
+    </div>}
+
+    {step===3&&<div className="card" style={{marginTop:0}}>
+      <h2>Roles &amp; permissions</h2>
+      <div className="al ai" style={{marginTop:0,fontSize:12.5}}>Define who can do what. You can edit these any time later.</div>
+      {roles.map((r,ri)=><div key={ri} style={{background:"var(--sur)",borderRadius:8,padding:12,marginTop:10}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+          <b style={{fontSize:14}}>{r.name}</b>
+          {roles.length>1&&<button className="btn bd bsm" onClick={()=>rmRole(ri)}>Remove</button>}
+        </div>
+        <div className="perm-row"><span className="perm-label">View all documents</span>
+          <button className={"tg"+(r.perms.docs_view==="all"?" on":"")} onClick={()=>togglePerm(ri,"docs_view")}/></div>
+        {Object.entries(PERM_LABELS).map(([k,lbl])=><div key={k} className="perm-row">
+          <span className="perm-label">{lbl}</span>
+          <button className={"tg"+(r.perms[k]?" on":"")} onClick={()=>togglePerm(ri,k)}/>
+        </div>)}
+      </div>)}
+      <div style={{display:"flex",gap:7,marginTop:12}}>
+        <input type="text" value={newRole} onChange={e=>setNewRole(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addRole()} placeholder="e.g. Branch Manager" style={{flex:1}}/>
+        <button className="btn bg bsm" onClick={addRole}>+ Add role</button>
+      </div>
+      <div className="brow">
+        <button className="btn bg" onClick={()=>setStep(2)}>← Back</button>
+        <button className="btn bp" onClick={()=>setStep(4)}>Continue →</button>
+      </div>
+    </div>}
+
+    {step===4&&<div className="card" style={{marginTop:0}}>
+      <h2>Review &amp; create</h2>
+      <div style={{background:"var(--sur)",borderRadius:8,padding:14}}>
+        <div style={{fontSize:15,fontWeight:700}}>{orgName}</div>
+        <div style={{fontSize:12.5,color:"var(--mu)",marginTop:2}}>{SECTORS[sector].i} {SECTORS[sector].n}</div>
+        <div style={{marginTop:10,fontSize:12.5}}><b>Hierarchy:</b> {levels.map(l=>l.n).join(" → ")}</div>
+        <div style={{marginTop:4,fontSize:12.5}}><b>Roles:</b> {roles.map(r=>r.name).join(", ")}</div>
+        <div style={{marginTop:4,fontSize:12.5}}><b>First unit:</b> {unitName||orgName}</div>
+      </div>
+      <div className="al ao" style={{fontSize:12.5}}>You will be the Administrator with full access. You can invite your team after setup.</div>
+      <div className="brow">
+        <button className="btn bg" onClick={()=>setStep(3)}>← Back</button>
+        <button className="btn bp" disabled={busy} onClick={finish}>{busy?<React.Fragment><span className="spin"/>Creating…</React.Fragment>:"Create organisation"}</button>
+      </div>
+      {err&&<div className="al ae">{err}</div>}
+    </div>}
+  </div>;
+}
+
+/* ══ UPLOADER ══ */
+function Uploader({ctx,onSaved,preloaded,onClearPre}){
+  const[stage,setStage]=useState("idle");
+  const[files,setFiles]=useState([]);const[prevs,setPrevs]=useState([]);const[svgs,setSvgs]=useState([]);
+  const[fields,setFields]=useState(null);const[fid,setFid]=useState("");const[uid,setUid]=useState("");
+  const[err,setErr]=useState(null);
+  const fRef=useRef();const cRef=useRef();
+  const isP=ctx.acct==="individual";
+  const TYPES=allTypes(ctx.sector,ctx.acct);
+  const plan=gp(ctx.plan,ctx.acct);
+  const atLimit=ctx.docs.length>=plan.docs;
+
+  useEffect(()=>{if(preloaded&&stage==="idle"){addFiles([preloaded]);onClearPre&&onClearPre();}},[preloaded]);
+
+  const addFiles=async list=>{
+    const arr=Array.from(list||[]);if(!arr.length)return;setErr(null);
+    try{netChk();}catch(e){setErr(e.message);return;}
+    if(atLimit){setErr("Plan limit reached ("+plan.docs+" documents). Upgrade to add more.");return;}
+    const big=arr.find(f=>f.size>15*1024*1024);
+    if(big){setErr('"'+big.name.slice(0,26)+'" exceeds 15MB. Photograph the pages instead.');return;}
+    const off=arr.find(f=>isDocx(f)||isXlsx(f));
+    if(off){await extract([off]);return;}
+    const good=arr.filter(f=>isImg(f)||isPdf(f));
+    if(!good.length){setErr("Accepted: photos, PDF, Word (.docx), Excel (.xlsx/.csv).");return;}
+    const rs=[],ps=[],ss=[];
+    for(const f of good){
+      const{file:cf,sv}=await compress(f);rs.push(cf);ss.push(sv);
+      if(isImg(cf)){try{ps.push(await toURL(cf));}catch{ps.push(null);}}else ps.push(null);
+    }
+    setFiles(p=>[...p,...rs]);setPrevs(p=>[...p,...ps]);setSvgs(p=>[...p,...ss]);
+  };
+  const rmPage=i=>{setFiles(p=>p.filter((_,j)=>j!==i));setPrevs(p=>p.filter((_,j)=>j!==i));setSvgs(p=>p.filter((_,j)=>j!==i));};
+
+  const extract=async fl=>{
+    const use=fl||files;if(!use.length)return;
+    setStage("extracting");setErr(null);
+    try{
+      netChk();let out;const f0=use[0];
+      if(isDocx(f0)){const b=await toAB(f0);const r=await mammoth.extractRawText({arrayBuffer:b});out=await AI.extractText(r.value,"a Word document",TYPES,isP);}
+      else if(isXlsx(f0)){const b=await toAB(f0);const wb=XLSX.read(b,{type:"array"});const csv=wb.SheetNames.map(n=>"---"+n+"---\n"+XLSX.utils.sheet_to_csv(wb.Sheets[n])).join("\n");out=await AI.extractText(csv,"a spreadsheet",TYPES,isP);}
+      else{const pts=[];for(const f of use){const mt=(f.type==="image/heic"||f.type==="image/heif")?"image/jpeg":(f.type||"image/jpeg");pts.push({inline_data:{mime_type:mt,data:await toB64(f)}});}out=await AI.extractFiles(pts,TYPES,isP);}
+      setFiles(use);setFields({...out,folder_id:fid||null,unit_id:uid||ctx.units?.[0]?.id||null});setStage("confirm");
+    }catch(e){setErr(e?.message||"Extraction failed.");setStage("idle");}
+  };
+
+  const save=async()=>{
+    setStage("saving");setErr(null);const up=[];
+    try{
+      netChk();const stamp=Date.now();
+      for(let i=0;i<files.length;i++){
+        const f=files[i];const path=stamp+"_p"+(i+1)+"_"+f.name.replace(/[^\w.\-]/g,"_");
+        const{error}=await sb.storage.from("documents").upload(path,f);
+        if(error)throw error;up.push(path);
+      }
+      const f0=files[0];const ft=isPdf(f0)?"pdf":isDocx(f0)?"docx":isXlsx(f0)?"xlsx":"image";
+      const raw=fields.amount;const amt=(raw!=null&&raw!==""&&!isNaN(Number(raw)))?Number(raw):null;
+      const{data:doc,error:de}=await sb.from("documents").insert({
+        user_id:ctx.userId,org_id:ctx.orgId||null,unit_id:fields.unit_id||null,folder_id:fields.folder_id||null,
+        title:fields.title||null,doc_type:fields.doc_type||"Other",issuer:fields.issuer||null,holder:fields.holder||null,
+        ref_number:fields.ref_number||null,issue_date:fields.issue_date||null,expiry_date:fields.expiry_date||null,
+        amount:amt,extracted:{...fields,pages:up},ai_provider:AI.provider,storage_path:up[0],file_type:ft
+      }).select().single();
+      if(de)throw de;
+      const acts=buildActions(fields,isP);
+      if(acts.length){
+        await sb.from("action_items").insert(acts.map(a=>({...a,document_id:doc.id,org_id:ctx.orgId||null,user_id:ctx.userId})));
+        const urgent=acts.filter(a=>a.priority==="high"||a.priority==="critical").slice(0,3);
+        if(urgent.length)await sb.from("notifications").insert(urgent.map(a=>({
+          user_id:ctx.userId,title:a.title,body:(a.due_date?"Due "+a.due_date:"")+(a.notes?" · "+a.notes:""),
+          type:a.action_type==="medicine"?"medicine":"action",document_id:doc.id})));
+      }
+      if(ctx.orgId)await sb.from("audit_log").insert({org_id:ctx.orgId,user_id:ctx.userId,user_email:ctx.email,action:"document_uploaded",entity_type:"document",entity_id:doc.id,details:{title:fields.title,type:fields.doc_type}});
+      setStage("idle");setFiles([]);setFields(null);setPrevs([]);setSvgs([]);onSaved();
+    }catch(e){
+      if(up.length)try{await sb.storage.from("documents").remove(up);}catch(_){}
+      setErr(e?.message||"Save failed.");setStage("confirm");
+    }
+  };
+
+  const F=(k,l,t)=><div className={k==="title"?"full":""}><label>{l}</label>
+    <input type={t||"text"} value={fields[k]??""} onChange={e=>setFields({...fields,[k]:e.target.value})}/></div>;
+
+  if(stage==="extracting")return <div className="card" style={{textAlign:"center",padding:"28px 18px"}}>
+    <div style={{fontSize:30,marginBottom:8}}>🧠</div>
+    <div style={{fontWeight:600}}><span className="spin"/>Analysing {files.length>1?files.length+" pages":"document"}…</div>
+    <div style={{fontSize:13,color:"var(--mu)",marginTop:5}}>Extracting deadlines, obligations, and actions. 5–20 seconds.</div>
+  </div>;
+
+  if(stage==="confirm"||stage==="saving"){
+    const acts=buildActions(fields,isP);
+    return <div className="card">
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10,flexWrap:"wrap"}}>
+        <h2 style={{marginBottom:0}}>Confirm &amp; save</h2><span className="badge btl">AI extracted</span>
+      </div>
+      <div className="fg">
+        {F("title","Title")}
+        <div><label>Type</label><select value={fields.doc_type||"Other"} onChange={e=>setFields({...fields,doc_type:e.target.value})}>
+          {Object.keys(TYPES).map(t=><option key={t}>{t}</option>)}</select></div>
+        <div><label>Folder</label><select value={fields.folder_id||""} onChange={e=>setFields({...fields,folder_id:e.target.value||null})}>
+          <option value="">No folder</option>{ctx.folders.map(f=><option key={f.id} value={f.id}>{f.icon} {f.name}</option>)}</select></div>
+        {ctx.orgId&&ctx.units?.length>0&&<div><label>Unit</label><select value={fields.unit_id||""} onChange={e=>setFields({...fields,unit_id:e.target.value||null})}>
+          {ctx.units.map(u=><option key={u.id} value={u.id}>{u.name}</option>)}</select></div>}
+        {F("ref_number","Reference no.")}
+        {F("issuer","Issuer")}
+        {F("holder","Holder")}
+        {F("issue_date","Issue date","date")}
+        {F("expiry_date","Expiry date","date")}
+        {F("amount","Amount (₹)","number")}
+      </div>
+      {fields.summary&&<div className="al ai" style={{fontSize:12.5}}>{fields.summary}</div>}
+      {(fields.penalties||fields.risk_on_expiry)&&<div className="al aw" style={{fontSize:12}}>
+        {fields.penalties&&<div>⚠️ <b>Penalty:</b> {fields.penalties}</div>}
+        {fields.risk_on_expiry&&<div style={{marginTop:4}}>🔴 <b>Risk:</b> {fields.risk_on_expiry}</div>}
+      </div>}
+      {isP&&fields.medicines?.length>0&&<div style={{marginTop:12}}>
+        <h3>💊 Medicines detected ({fields.medicines.length})</h3>
+        {fields.medicines.map((m,i)=><div key={i} className="med-card">
+          <div className="med-n">{m.name} {m.dosage&&<span style={{fontWeight:400,color:"var(--mu)"}}>· {m.dosage}</span>}</div>
+          <div className="med-d">{[m.frequency,m.timing,m.duration_days?m.duration_days+" days":null].filter(Boolean).join(" · ")}</div>
+          <div className="med-t">{(m.times||[]).map((t,j)=><span key={j} className="mt-chip">⏰ {t}</span>)}</div>
+        </div>)}
+      </div>}
+      {isP&&fields.tests_advised?.length>0&&<div style={{marginTop:12}}>
+        <h3>🔬 Tests advised</h3>
+        {fields.tests_advised.map((t,i)=><div key={i} className="med-card">
+          <div className="med-n">{t.name}</div>
+          <div className="med-d">{t.due_after_days?"After "+t.due_after_days+" days":"As advised"}{t.notes?" · "+t.notes:""}</div>
+        </div>)}
+      </div>}
+      {acts.length>0&&<div className="al ao" style={{fontSize:12.5}}>
+        ✅ <b>{acts.length} action{acts.length>1?"s":""}</b> will be created: {acts.slice(0,3).map(a=>a.title).join(", ")}{acts.length>3?` +${acts.length-3} more`:""}
+      </div>}
+      {files.length>1&&<div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:8}}>{files.map((_,i)=><span key={i} className="badge btl">Page {i+1}</span>)}</div>}
+      <button className="btn bp" disabled={stage==="saving"} onClick={save}>{stage==="saving"?<React.Fragment><span className="spin"/>Saving…</React.Fragment>:"Save to vault"}</button>
+      <button className="btn bg" disabled={stage==="saving"} style={{marginTop:7}} onClick={()=>{setStage("idle");setFiles([]);setFields(null);setPrevs([]);setSvgs([]);}}>Discard</button>
+      {err&&<div className="al ae">{err}</div>}
+    </div>;
+  }
+
+  const noKey=AI.mode!=="server"&&!AI.getKey();
+  return <div className="card">
+    <h2>Add a document</h2>
+    {noKey&&<div className="al aw">⚙ <b>Setup needed:</b> Open Settings and add your free Gemini API key from aistudio.google.com to enable AI scanning.</div>}
+    {atLimit&&<div className="al aw">📋 Plan limit reached ({plan.docs} documents). Upgrade to add more.</div>}
+    {!atLimit&&<React.Fragment>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginTop:6}}>
+        <div className="uz" onClick={()=>cRef.current.click()}>
+          <div className="uz-ic">📷</div><div className="uz-t">Scan</div><div className="uz-s">Camera</div>
+        </div>
+        <div className="uz" onClick={()=>fRef.current.click()}>
+          <div className="uz-ic">📎</div><div className="uz-t">Import</div><div className="uz-s">File · WhatsApp</div>
+        </div>
+      </div>
+      <input ref={cRef} type="file" accept="image/*" capture="environment" hidden onChange={e=>{addFiles(e.target.files);e.target.value="";}}/>
+      <input ref={fRef} type="file" multiple hidden accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv,.docx,.xlsx,.xls,.csv" onChange={e=>{addFiles(e.target.files);e.target.value="";}}/>
+      {files.length>0&&<React.Fragment>
+        <div style={{fontSize:12.5,fontWeight:600,color:"var(--mu)",margin:"10px 0 0"}}>{files.length} page{files.length>1?"s":""} ready</div>
+        <div className="pg">
+          {files.map((f,i)=><div key={i} className="pt">
+            {prevs[i]?<img src={prevs[i]} alt=""/>:<div style={{height:70,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24}}>{isPdf(f)?"📄":isDocx(f)?"📝":"📊"}</div>}
+            <div className="pt-l">Page {i+1}</div>
+            {svgs[i]&&<div className="pt-s">{fmt(svgs[i].b)}→{fmt(svgs[i].a)}</div>}
+            <button className="pt-r" onClick={()=>rmPage(i)}>✕</button>
+          </div>)}
+          <div className="uz" style={{minHeight:70,padding:6}} onClick={()=>cRef.current.click()}>
+            <div style={{fontSize:19}}>📷</div><div style={{fontSize:10,color:"var(--mu)"}}>Add page</div>
+          </div>
+        </div>
+        <button className="btn bp" onClick={()=>extract()}>✨ Analyse with AI</button>
+        <button className="btn bg" style={{marginTop:7}} onClick={()=>{setFiles([]);setPrevs([]);setSvgs([]);}}>Clear</button>
+      </React.Fragment>}
+      {err&&<div className="al ae">{err}</div>}
+    </React.Fragment>}
+  </div>;
+}
+
+/* ══ DOCUMENT DETAIL ══ */
+function Detail({doc,ctx,onClose,onDeleted,onChanged}){
+  const[busy,setBusy]=useState(false);const[err,setErr]=useState(null);const[cdel,setCdel]=useState(false);
+  const[acts,setActs]=useState([]);const[fid,setFid]=useState(doc.folder_id||"");
+  const pages=(doc.extracted?.pages)||[doc.storage_path];
+  const TYPES=allTypes(ctx.sector,ctx.acct);
+  const n=daysTo(doc.expiry_date);const ex=doc.extracted||{};
+  useEffect(()=>{sb.from("action_items").select("*").eq("document_id",doc.id).order("due_date").then(({data})=>setActs(data||[]));},[doc.id]);
+  const view=async i=>{setBusy(true);setErr(null);
+    try{const{data,error}=await sb.storage.from("documents").createSignedUrl(pages[i],3600);if(error)throw error;window.open(data.signedUrl,"_blank");}
+    catch(e){setErr(e.message);}setBusy(false);};
+  const del=async()=>{setBusy(true);
+    try{await sb.storage.from("documents").remove(pages);const{error}=await sb.from("documents").delete().eq("id",doc.id);if(error)throw error;
+      if(ctx.orgId)await sb.from("audit_log").insert({org_id:ctx.orgId,user_id:ctx.userId,user_email:ctx.email,action:"document_deleted",entity_type:"document",entity_id:doc.id,details:{title:doc.title}});
+      onDeleted();}catch(e){setErr(e.message);setBusy(false);}};
+  const move=async()=>{await sb.from("documents").update({folder_id:fid||null}).eq("id",doc.id);onChanged&&onChanged();};
+  const AN=[{k:"penalties",l:"⚠️ Penalties & fines",c:"risk"},{k:"risk_on_expiry",l:"🔴 Risk if it lapses",c:"risk"},
+    {k:"action_required",l:"✅ Action required",c:"warn"},{k:"compliance_deadline",l:"📅 Compliance lead time",c:""},
+    {k:"obligations",l:"📌 Obligations",c:""},{k:"financial_obligations",l:"💰 Financial commitments",c:""},
+    {k:"legal_jurisdiction",l:"⚖️ Legal jurisdiction",c:""},{k:"key_clauses",l:"📝 Key clauses",c:""},
+    {k:"governing_authority",l:"🏛️ Regulator",c:""}].filter(f=>ex[f.k]);
+  return <React.Fragment>
+    {cdel&&<Confirm title="Delete document?" msg="Permanently deletes this document, its files and all linked actions. Cannot be undone." yes="Yes, delete" onYes={()=>{setCdel(false);del();}} onNo={()=>setCdel(false)}/>}
+    <div className="card">
+      <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:12}}>
+        <div style={{fontSize:29,lineHeight:1}}>{TYPES[doc.doc_type]||"📁"}</div>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:15,fontWeight:700,wordBreak:"break-word"}}>{doc.title||doc.doc_type}</div>
+          <div style={{fontSize:12,color:"var(--mu)",marginTop:2}}>{doc.doc_type}</div>
+        </div>
+        <button onClick={onClose} style={{background:"none",border:"none",fontSize:19,cursor:"pointer",color:"var(--mu)"}}>✕</button>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:7,fontSize:13}}>
+        {[["Reference",doc.ref_number],["Issuer",doc.issuer],["Holder",doc.holder],["Issue date",doc.issue_date],
+          doc.expiry_date?["Expiry",<span className={ec(n)}>{doc.expiry_date} ({el(n)})</span>]:null,
+          doc.amount!=null?["Amount",inr(doc.amount)]:null].filter(Boolean).map(([k,v],i)=>
+          <div key={i} style={{background:"var(--sur)",borderRadius:8,padding:"8px 11px"}}>
+            <div style={{fontSize:10,fontWeight:700,color:"var(--mu)",textTransform:"uppercase"}}>{k}</div>
+            <div style={{fontWeight:600,marginTop:2}}>{v||"—"}</div></div>)}
+      </div>
+      {ex.summary&&<div className="al ai" style={{fontSize:12.5}}>{ex.summary}</div>}
+      {ex.medicines?.length>0&&<React.Fragment>
+        <h3 style={{marginTop:14}}>💊 Medicines</h3>
+        {ex.medicines.map((m,i)=><div key={i} className="med-card">
+          <div className="med-n">{m.name}{m.dosage&&<span style={{fontWeight:400,color:"var(--mu)"}}> · {m.dosage}</span>}</div>
+          <div className="med-d">{[m.frequency,m.timing,m.duration_days?m.duration_days+" days":null].filter(Boolean).join(" · ")}</div>
+          <div className="med-t">{(m.times||[]).map((t,j)=><span key={j} className="mt-chip">⏰ {t}</span>)}</div>
+        </div>)}
+      </React.Fragment>}
+      {acts.length>0&&<React.Fragment>
+        <h3 style={{marginTop:14}}>📋 Actions ({acts.length})</h3>
+        {acts.map(a=><div key={a.id} className="ac-item">
+          <div className="ac-dot" style={{background:a.priority==="critical"||a.priority==="high"?"var(--rd)":a.priority==="medium"?"var(--am)":"var(--gn)"}}/>
+          <div style={{flex:1}}><div className="ac-t">{a.title}</div>
+            <div className="ac-s">{[a.due_date,a.due_time,a.recurrence?a.recurrence.toLowerCase()+(a.recurrence_count?" ×"+a.recurrence_count:""):null,a.notes].filter(Boolean).join(" · ")}</div></div>
+        </div>)}
+      </React.Fragment>}
+      {AN.length>0&&<React.Fragment>
+        <h3 style={{marginTop:14}}>📊 Analysis</h3>
+        <div className="ang">{AN.map(({k,l,c})=><div key={k} className={"anc "+c}>
+          <div className="anl">{l}</div><div className="anv">{ex[k]}</div></div>)}</div>
+      </React.Fragment>}
+      {ctx.folders.length>0&&<div style={{display:"flex",gap:8,marginTop:14}}>
+        <select value={fid} onChange={e=>setFid(e.target.value)} style={{flex:1,fontSize:13,padding:"7px 10px"}}>
+          <option value="">No folder</option>{ctx.folders.map(f=><option key={f.id} value={f.id}>{f.icon} {f.name}</option>)}
+        </select><button className="btn bg bsm" onClick={move}>Move</button>
+      </div>}
+      <div style={{marginTop:12}}>
+        {pages.length===1?<button className="btn bg" disabled={busy} onClick={()=>view(0)}>📂 Open original</button>
+          :<React.Fragment><div style={{fontSize:12,color:"var(--mu)",marginBottom:5}}>{pages.length} pages:</div>
+            <div className="brow">{pages.map((_,i)=><button key={i} className="btn bg bsm" disabled={busy} onClick={()=>view(i)}>Page {i+1}</button>)}</div></React.Fragment>}
+        <button className="btn bg" style={{marginTop:7}} onClick={()=>dlICS([...docToICS(doc),...actionsToICS(acts)],(doc.title||"document").slice(0,30))}>📅 Add to Calendar</button>
+        <button className="btn bd" style={{marginTop:7}} disabled={busy} onClick={()=>setCdel(true)}>🗑 Delete</button>
+      </div>
+      {err&&<div className="al ae">{err}</div>}
+    </div>
+  </React.Fragment>;
+}
+
+/* ══ VAULT ══ */
+function Vault({ctx,onOpen,loading}){
+  const[q,setQ]=useState("");const[band,setBand]=useState("all");const[fid,setFid]=useState("all");
+  const docs=ctx.docs;const TYPES=allTypes(ctx.sector,ctx.acct);
+  const c=useMemo(()=>{let o=0,s=0,g=0;docs.forEach(d=>{const n=daysTo(d.expiry_date);if(n===null)return;if(n<0)o++;else if(n<=30)s++;else g++;});return{o,s,g,a:docs.length};},[docs]);
+  const shown=useMemo(()=>docs.filter(d=>{
+    const n=daysTo(d.expiry_date);
+    if(band==="o"&&!(n!==null&&n<0))return false;
+    if(band==="s"&&!(n!==null&&n>=0&&n<=30))return false;
+    if(band==="g"&&!(n!==null&&n>30))return false;
+    if(fid==="none"&&d.folder_id)return false;
+    if(fid!=="all"&&fid!=="none"&&d.folder_id!==fid)return false;
+    if(q){const h=[d.title,d.doc_type,d.ref_number,d.issuer,d.holder,d.extracted?.summary].join(" ").toLowerCase();if(!h.includes(q.toLowerCase()))return false;}
+    return true;}),[docs,q,band,fid]);
+  return <div className="card">
+    <h2>Vault</h2>
+    <div className="sg">
+      {[{i:"o",l:"Overdue",n:c.o,c:"so"},{i:"s",l:"≤30 days",n:c.s,c:"ss"},{i:"g",l:"Safe",n:c.g,c:"sg2"},{i:"all",l:"All",n:c.a,c:""}].map(s=>
+        <div key={s.i} className={"st "+s.c+(band===s.i?" on":"")} onClick={()=>setBand(band===s.i?"all":s.i)}>
+          <div className="sn">{s.n}</div><div className="sl">{s.l}</div></div>)}
+    </div>
+    {ctx.folders.length>0&&<div className="fbar">
+      <span className={"fb"+(fid==="all"?" on":"")} onClick={()=>setFid("all")}>All</span>
+      <span className={"fb"+(fid==="none"?" on":"")} onClick={()=>setFid("none")}>📭 Unfiled</span>
+      {ctx.folders.map(f=><span key={f.id} className={"fb"+(fid===f.id?" on":"")} onClick={()=>setFid(fid===f.id?"all":f.id)}>{f.icon} {f.name}</span>)}
+    </div>}
+    <div className="fr"><input type="search" placeholder="Search…" value={q} onChange={e=>setQ(e.target.value)}/></div>
+    {shown.length===0?<div style={{textAlign:"center",padding:"28px 16px",color:"var(--mu)"}}>
+      {loading?<React.Fragment><span className="spin"/>Loading…</React.Fragment>
+       :docs.length===0?<React.Fragment><div style={{fontSize:34,marginBottom:8}}>📭</div>
+         <div style={{fontWeight:700,marginBottom:4,color:"var(--ink2)"}}>No documents yet</div>
+         <div style={{fontSize:13}}>Scan your first document to get started.</div></React.Fragment>
+       :"No matches. Clear filters."}</div>
+      :shown.map(d=>{const n=daysTo(d.expiry_date);return <div key={d.id} className="dr" onClick={()=>onOpen(d)}>
+        <div className="di">{TYPES[d.doc_type]||"📁"}</div>
+        <div style={{flex:1,minWidth:0}}><div className="dt">{d.title||d.doc_type}</div>
+          <div className="dm">{[d.doc_type,d.ref_number].filter(Boolean).join(" · ")}</div></div>
+        <div className={"de "+(n===null?"en":ec(n))}>{d.expiry_date?<React.Fragment><div>{d.expiry_date}</div><div style={{fontSize:11}}>{el(n)}</div></React.Fragment>:"—"}</div>
+      </div>;})}
+  </div>;
+}
+
+/* ══ ACTIONS / TASKS ══ */
+function Actions({ctx,onRefresh}){
+  const[filter,setFilter]=useState("pending");
+  const acts=ctx.actions||[];
+  const shown=acts.filter(a=>filter==="all"?true:a.status===filter);
+  const done=async(id,st)=>{await sb.from("action_items").update({status:st}).eq("id",id);onRefresh();};
+  const byType={medicine:"💊",test:"🔬",appointment:"👨‍⚕️",payment:"💰",deadline:"⏰",inspection:"🔍",renewal:"🔄",task:"📋"};
+  const overdue=shown.filter(a=>a.due_date&&daysTo(a.due_date)<0);
+  const todayA=shown.filter(a=>a.due_date&&daysTo(a.due_date)===0);
+  const soon=shown.filter(a=>a.due_date&&daysTo(a.due_date)>0&&daysTo(a.due_date)<=7);
+  const later=shown.filter(a=>!a.due_date||daysTo(a.due_date)>7);
+  const Grp=({t,items,color})=>items.length===0?null:<React.Fragment>
+    <div className="tl-g" style={{color}}>{t} ({items.length})</div>
+    {items.map(a=><div key={a.id} className="ac-item">
+      <div style={{fontSize:18}}>{byType[a.action_type]||"📋"}</div>
+      <div style={{flex:1}}>
+        <div className="ac-t" style={{textDecoration:a.status==="done"?"line-through":"none",opacity:a.status==="done"?.5:1}}>{a.title}</div>
+        <div className="ac-s">{[a.due_date,a.due_time,a.recurrence?a.recurrence.toLowerCase():null,a.notes].filter(Boolean).join(" · ")}</div>
+      </div>
+      <button className={"btn bsm "+(a.status==="done"?"bg":"bp")} onClick={()=>done(a.id,a.status==="done"?"pending":"done")}>
+        {a.status==="done"?"↺":"✓"}</button>
+    </div>)}
+  </React.Fragment>;
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:8}}>
+      <h2 style={{marginBottom:0}}>Actions &amp; Reminders</h2>
+      <button className="btn bg bsm" onClick={()=>dlICS(actionsToICS(acts.filter(a=>a.status==="pending")),"tokei-actions")}>📅 Sync all</button>
+    </div>
+    <div className="fbar">
+      {[["pending","Pending"],["done","Completed"],["all","All"]].map(([k,l])=>
+        <span key={k} className={"fb"+(filter===k?" on":"")} onClick={()=>setFilter(k)}>{l}</span>)}
+    </div>
+    {shown.length===0?<div style={{textAlign:"center",padding:"26px 16px",color:"var(--mu)"}}>
+      <div style={{fontSize:32,marginBottom:8}}>✅</div><div style={{fontWeight:600}}>Nothing here</div>
+      <div style={{fontSize:13,marginTop:3}}>Actions appear automatically when you scan documents.</div></div>
+      :<React.Fragment>
+        <Grp t="Overdue" items={overdue} color="var(--rd)"/>
+        <Grp t="Today" items={todayA} color="var(--am)"/>
+        <Grp t="This week" items={soon} color="var(--tl)"/>
+        <Grp t="Later" items={later} color="var(--mu)"/>
+      </React.Fragment>}
+  </div>;
+}
+
+/* ══ TIMELINE ══ */
+function Timeline({ctx,onOpen}){
+  const docs=ctx.docs;
+  const up=docs.filter(d=>d.expiry_date).map(d=>({...d,n:daysTo(d.expiry_date)})).filter(d=>d.n!==null&&d.n>=-30&&d.n<=365).sort((a,b)=>a.n-b.n);
+  const TYPES=allTypes(ctx.sector,ctx.acct);
+  const g={};up.forEach(d=>{const k=new Date(d.expiry_date+"T00:00:00").toLocaleString("en-IN",{month:"short",year:"numeric"});(g[k]=g[k]||[]).push(d);});
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8,flexWrap:"wrap",gap:8}}>
+      <h2 style={{marginBottom:0}}>Timeline</h2>
+      <button className="btn bg bsm" onClick={()=>dlICS(up.flatMap(docToICS),"tokei-expiries")}>📅 Export all</button>
+    </div>
+    {Object.keys(g).length===0?<div style={{textAlign:"center",padding:"26px 16px",color:"var(--mu)"}}>
+      <div style={{fontSize:32,marginBottom:8}}>📅</div><div style={{fontSize:13}}>No upcoming expiries in the next year.</div></div>
+      :Object.entries(g).map(([m,items])=><React.Fragment key={m}>
+        <div className="tl-g">{m}</div>
+        {items.map(d=>{const dt=new Date(d.expiry_date+"T00:00:00");
+          return <div key={d.id} className="tl-row" onClick={()=>onOpen(d)}>
+            <div className="tl-date"><div className="tl-day">{dt.getDate()}</div><div className="tl-mon">{dt.toLocaleString("en",{weekday:"short"})}</div></div>
+            <div className="tl-dot" style={{background:d.n<0?"var(--rd)":d.n<=30?"var(--am)":"var(--gn)"}}/>
+            <div className="tl-cnt"><div className="tl-t">{TYPES[d.doc_type]||"📁"} {d.title||d.doc_type}</div>
+              <div className="tl-s"><span className={ec(d.n)}>{el(d.n)}</span></div></div>
+          </div>;})}
+      </React.Fragment>)}
+  </div>;
+}
+
+/* ══ LOAN PROCESSING MODULE ══ */
+const LOAN_CHECKLISTS={
+  home:["PAN Card","Aadhaar Card","Income Tax Returns (3 yrs)","Salary Slips (6 months)","Bank Statement (6 months)","Property Sale Deed","Property Tax Receipt","Approved Building Plan","NOC from Builder","Encumbrance Certificate","Valuation Report","Photographs"],
+  personal:["PAN Card","Aadhaar Card","Salary Slips (3 months)","Bank Statement (6 months)","Employment Certificate","Photographs"],
+  auto:["PAN Card","Aadhaar Card","Income Proof","Bank Statement (6 months)","Vehicle Quotation","Driving License","Photographs"],
+  business:["PAN Card","Aadhaar Card","Business Registration","GST Returns (1 yr)","ITR (2 yrs)","Bank Statement (12 months)","Balance Sheet","Profit & Loss Statement","Business Address Proof"],
+  education:["PAN Card","Aadhaar Card","Admission Letter","Fee Structure","Academic Records","Co-applicant Income Proof","Bank Statement (6 months)"],
+  mortgage:["PAN Card","Aadhaar Card","Property Documents","Income Proof","Bank Statement (12 months)","Valuation Report","Title Search Report","Encumbrance Certificate"]
+};
+const LOAN_STAGES=["application","processing","approved","disbursed","closed"];
+const STAGE_LABEL={application:"Application",processing:"Processing",approved:"Approved",disbursed:"Disbursed",closed:"Closed",rejected:"Rejected"};
+
+function LoanModule({ctx,onRefresh}){
+  const[loans,setLoans]=useState([]);const[sel,setSel]=useState(null);const[showNew,setShowNew]=useState(false);
+  const[busy,setBusy]=useState(false);const[err,setErr]=useState(null);const[loading,setLoading]=useState(true);
+  const[f,setF]=useState({borrower_name:"",borrower_contact:"",loan_type:"home",loan_amount:"",co_applicant:"",property_address:"",notes:""});
+  const load=async()=>{setLoading(true);
+    const{data}=await sb.from("loan_files").select("*").eq("org_id",ctx.orgId).order("created_at",{ascending:false});
+    setLoans(data||[]);setLoading(false);};
+  useEffect(()=>{if(ctx.orgId)load();},[ctx.orgId]);
+  const create=async()=>{
+    if(!f.borrower_name.trim()){setErr("Enter borrower name.");return;}
+    setBusy(true);setErr(null);
+    try{
+      const ln="LN"+Date.now().toString().slice(-8);
+      const{data:loan,error}=await sb.from("loan_files").insert({org_id:ctx.orgId,loan_number:ln,
+        borrower_name:f.borrower_name.trim(),borrower_contact:f.borrower_contact||null,co_applicant:f.co_applicant||null,
+        loan_type:f.loan_type,loan_amount:f.loan_amount?Number(f.loan_amount):null,property_address:f.property_address||null,
+        notes:f.notes||null,created_by:ctx.userId,assigned_to:ctx.userId,status:"application"}).select().single();
+      if(error)throw error;
+      const cl=LOAN_CHECKLISTS[f.loan_type]||LOAN_CHECKLISTS.personal;
+      await sb.from("loan_documents").insert(cl.map(d=>({loan_id:loan.id,doc_name:d,is_mandatory:true,status:"pending"})));
+      await sb.from("audit_log").insert({org_id:ctx.orgId,user_id:ctx.userId,user_email:ctx.email,action:"loan_created",entity_type:"loan",entity_id:loan.id,details:{borrower:f.borrower_name,type:f.loan_type}});
+      setF({borrower_name:"",borrower_contact:"",loan_type:"home",loan_amount:"",co_applicant:"",property_address:"",notes:""});
+      setShowNew(false);await load();
+    }catch(e){setErr(e.message);}setBusy(false);
+  };
+  if(sel)return <LoanDetail loan={sel} ctx={ctx} onBack={()=>{setSel(null);load();}}/>;
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,flexWrap:"wrap",gap:8}}>
+      <h2 style={{marginBottom:0}}>💳 Loan Files</h2>
+      <button className="btn bp bsm" onClick={()=>setShowNew(!showNew)}>{showNew?"✕ Cancel":"+ New loan"}</button>
+    </div>
+    {showNew&&<div style={{background:"var(--sur)",borderRadius:8,padding:14,marginBottom:12}}>
+      <div className="fg">
+        <div className="full"><label>Borrower name *</label><input type="text" value={f.borrower_name} onChange={e=>setF({...f,borrower_name:e.target.value})} placeholder="Full name"/></div>
+        <div><label>Loan type</label><select value={f.loan_type} onChange={e=>setF({...f,loan_type:e.target.value})}>
+          {Object.keys(LOAN_CHECKLISTS).map(t=><option key={t} value={t}>{t.charAt(0).toUpperCase()+t.slice(1)}</option>)}</select></div>
+        <div><label>Loan amount (₹)</label><input type="number" value={f.loan_amount} onChange={e=>setF({...f,loan_amount:e.target.value})}/></div>
+        <div><label>Contact</label><input type="text" value={f.borrower_contact} onChange={e=>setF({...f,borrower_contact:e.target.value})} placeholder="Phone / email"/></div>
+        <div><label>Co-applicant</label><input type="text" value={f.co_applicant} onChange={e=>setF({...f,co_applicant:e.target.value})}/></div>
+      </div>
+      <button className="btn bp" disabled={busy} onClick={create}>{busy?"Creating…":"Create loan file"}</button>
+      {err&&<div className="al ae">{err}</div>}
+    </div>}
+    {loading?<div style={{textAlign:"center",padding:20,color:"var(--mu)"}}><span className="spin"/>Loading…</div>
+     :loans.length===0?<div style={{textAlign:"center",padding:"26px 16px",color:"var(--mu)"}}>
+       <div style={{fontSize:32,marginBottom:8}}>💳</div><div style={{fontWeight:600}}>No loan files yet</div>
+       <div style={{fontSize:13,marginTop:3}}>Create your first loan file to begin tracking borrower documents.</div></div>
+     :loans.map(l=><div key={l.id} className="dr" onClick={()=>setSel(l)}>
+        <div className="di">💳</div>
+        <div style={{flex:1,minWidth:0}}>
+          <div className="dt">{l.borrower_name}</div>
+          <div className="dm">{l.loan_number} · {l.loan_type} · {inr(l.loan_amount)}</div>
+        </div>
+        <span className={"badge "+(l.status==="disbursed"?"bgn":l.status==="rejected"?"brd2":l.status==="approved"?"bbl":"bam")}>{STAGE_LABEL[l.status]}</span>
+      </div>)}
+  </div>;
+}
+
+function LoanDetail({loan,ctx,onBack}){
+  const[docs,setDocs]=useState([]);const[busy,setBusy]=useState(false);const[st,setSt]=useState(loan.status);
+  const load=async()=>{const{data}=await sb.from("loan_documents").select("*").eq("loan_id",loan.id).order("created_at");setDocs(data||[]);};
+  useEffect(()=>{load();},[loan.id]);
+  const setDocStatus=async(id,status)=>{setBusy(true);
+    await sb.from("loan_documents").update({status,verified_by:status==="verified"?ctx.userId:null,verified_at:status==="verified"?new Date().toISOString():null}).eq("id",id);
+    await load();setBusy(false);};
+  const setStage=async(s)=>{setBusy(true);setSt(s);
+    await sb.from("loan_files").update({status:s}).eq("id",loan.id);
+    await sb.from("audit_log").insert({org_id:ctx.orgId,user_id:ctx.userId,user_email:ctx.email,action:"loan_stage_changed",entity_type:"loan",entity_id:loan.id,details:{from:loan.status,to:s}});
+    setBusy(false);};
+  const received=docs.filter(d=>d.status!=="pending").length;
+  const verified=docs.filter(d=>d.status==="verified").length;
+  const SC={pending:["⏳","bam","Pending"],received:["📥","bbl","Received"],under_review:["👀","bpu","In review"],verified:["✅","bgn","Verified"],rejected:["❌","brd2","Rejected"],expired:["⌛","brd2","Expired"]};
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
+      <div><div style={{fontSize:16,fontWeight:700}}>{loan.borrower_name}</div>
+        <div style={{fontSize:12,color:"var(--mu)"}}>{loan.loan_number} · {loan.loan_type} · {inr(loan.loan_amount)}</div></div>
+      <button className="btn bg bsm" onClick={onBack}>← Back</button>
+    </div>
+    <div className="ls-bar">{LOAN_STAGES.map((s,i)=>{
+      const ci=LOAN_STAGES.indexOf(st);
+      return <div key={s} className={"ls-step "+(i<ci?"done":i===ci?"cur":"")} onClick={()=>!busy&&setStage(s)} style={{cursor:"pointer"}}>{STAGE_LABEL[s]}</div>;})}
+    </div>
+    <div style={{display:"flex",gap:8,marginTop:10}}>
+      <div style={{flex:1,background:"var(--sur)",borderRadius:8,padding:"9px 12px",textAlign:"center"}}>
+        <div style={{fontSize:19,fontWeight:800}}>{received}/{docs.length}</div><div style={{fontSize:10.5,color:"var(--mu)",textTransform:"uppercase"}}>Received</div></div>
+      <div style={{flex:1,background:"var(--sur)",borderRadius:8,padding:"9px 12px",textAlign:"center"}}>
+        <div style={{fontSize:19,fontWeight:800,color:"var(--gn)"}}>{verified}</div><div style={{fontSize:10.5,color:"var(--mu)",textTransform:"uppercase"}}>Verified</div></div>
+    </div>
+    <h3 style={{marginTop:14}}>Document checklist</h3>
+    {docs.map(d=>{const[ic,cl,lbl]=SC[d.status]||SC.pending;
+      return <div key={d.id} className="ldc">
+        <span style={{fontSize:16}}>{ic}</span>
+        <span className="ldc-n">{d.doc_name}{d.is_mandatory&&<span style={{color:"var(--rd)"}}> *</span>}</span>
+        <select value={d.status} disabled={busy} onChange={e=>setDocStatus(d.id,e.target.value)} style={{width:"auto",fontSize:11.5,padding:"4px 7px"}}>
+          {Object.keys(SC).map(k=><option key={k} value={k}>{SC[k][2]}</option>)}
+        </select>
+      </div>;})}
+  </div>;
+}
+
+/* ══ TEAM MANAGEMENT ══ */
+function TeamPanel({ctx,onRefresh}){
+  const[members,setMembers]=useState([]);const[roles,setRoles]=useState([]);const[units,setUnits]=useState([]);
+  const[levels,setLevels]=useState([]);const[err,setErr]=useState(null);const[busy,setBusy]=useState(false);
+  const[tab,setTab]=useState("members");const[newUnit,setNewUnit]=useState({name:"",level_id:"",parent_id:""});
+  const[newRole,setNewRole]=useState("");
+  const load=async()=>{
+    const[m,r,u,l]=await Promise.all([
+      sb.from("org_members").select("*").eq("org_id",ctx.orgId),
+      sb.from("custom_roles").select("*").eq("org_id",ctx.orgId),
+      sb.from("org_units").select("*").eq("org_id",ctx.orgId),
+      sb.from("org_levels").select("*").eq("org_id",ctx.orgId).order("level_number")]);
+    setMembers(m.data||[]);setRoles(r.data||[]);setUnits(u.data||[]);setLevels(l.data||[]);
+  };
+  useEffect(()=>{if(ctx.orgId)load();},[ctx.orgId]);
+  const addUnit=async()=>{
+    if(!newUnit.name.trim()||!newUnit.level_id){setErr("Enter a name and pick a level.");return;}
+    setBusy(true);setErr(null);
+    const{error}=await sb.from("org_units").insert({org_id:ctx.orgId,name:newUnit.name.trim(),level_id:newUnit.level_id,parent_id:newUnit.parent_id||null});
+    if(error)setErr(error.message);else{setNewUnit({name:"",level_id:"",parent_id:""});await load();onRefresh&&onRefresh();}
+    setBusy(false);};
+  const addRole=async()=>{
+    if(!newRole.trim())return;setBusy(true);
+    const{error}=await sb.from("custom_roles").insert({org_id:ctx.orgId,name:newRole.trim(),permissions:DEF_PERMS});
+    if(error)setErr(error.message);else{setNewRole("");await load();}setBusy(false);};
+  const togglePerm=async(role,key)=>{
+    setBusy(true);const p={...role.permissions};
+    if(key==="docs_view")p.docs_view=p.docs_view==="all"?"own":"all";else p[key]=!p[key];
+    await sb.from("custom_roles").update({permissions:p}).eq("id",role.id);await load();setBusy(false);};
+  const setMemberRole=async(mid,rid)=>{setBusy(true);await sb.from("org_members").update({role_id:rid}).eq("id",mid);await load();setBusy(false);};
+  const setMemberUnit=async(mid,uid)=>{setBusy(true);await sb.from("org_members").update({unit_id:uid||null}).eq("id",mid);await load();setBusy(false);};
+  return <div className="card">
+    <h2>👥 Organisation</h2>
+    <div className="fbar">
+      {[["members","Members"],["units","Structure"],["roles","Roles"],["invite","Invite"]].map(([k,l])=>
+        <span key={k} className={"fb"+(tab===k?" on":"")} onClick={()=>setTab(k)}>{l}</span>)}
+    </div>
+    {tab==="members"&&<React.Fragment>
+      {members.length===0&&<div style={{color:"var(--mu)",fontSize:13,padding:12}}>No members yet.</div>}
+      {members.map(m=><div key={m.id} style={{borderTop:"1px solid var(--brd)",padding:"11px 0"}}>
+        <div style={{fontWeight:600,fontSize:13.5}}>{m.user_id===ctx.userId?ctx.email+" (you)":m.user_id.slice(0,14)}
+          {m.is_org_admin&&<span className="badge btl" style={{marginLeft:6}}>ADMIN</span>}</div>
+        <div style={{display:"flex",gap:7,marginTop:7,flexWrap:"wrap"}}>
+          <select value={m.role_id||""} disabled={busy} onChange={e=>setMemberRole(m.id,e.target.value)} style={{flex:1,minWidth:110,fontSize:12,padding:"5px 8px"}}>
+            <option value="">No role</option>{roles.map(r=><option key={r.id} value={r.id}>{r.name}</option>)}</select>
+          <select value={m.unit_id||""} disabled={busy} onChange={e=>setMemberUnit(m.id,e.target.value)} style={{flex:1,minWidth:110,fontSize:12,padding:"5px 8px"}}>
+            <option value="">No unit</option>{units.map(u=><option key={u.id} value={u.id}>{u.name}</option>)}</select>
+        </div>
+      </div>)}
+    </React.Fragment>}
+    {tab==="units"&&<React.Fragment>
+      <div style={{fontSize:12.5,color:"var(--mu)",margin:"8px 0"}}>Levels: {levels.map(l=>l.level_name).join(" → ")}</div>
+      {units.map(u=>{const lv=levels.find(l=>l.id===u.level_id);
+        return <div key={u.id} className="ol-item">
+          <div className="ol-num">{lv?.level_number||"?"}</div>
+          <div className="ol-name">{u.name}<div style={{fontSize:11,color:"var(--mu)",fontWeight:400}}>{lv?.level_name}</div></div>
+        </div>;})}
+      <div style={{background:"var(--sur)",borderRadius:8,padding:12,marginTop:12}}>
+        <label style={{marginTop:0}}>Add unit</label>
+        <input type="text" value={newUnit.name} onChange={e=>setNewUnit({...newUnit,name:e.target.value})} placeholder="e.g. Mumbai Branch"/>
+        <div style={{display:"flex",gap:7,marginTop:7}}>
+          <select value={newUnit.level_id} onChange={e=>setNewUnit({...newUnit,level_id:e.target.value})} style={{flex:1,fontSize:12.5}}>
+            <option value="">Level…</option>{levels.map(l=><option key={l.id} value={l.id}>{l.level_name}</option>)}</select>
+          <select value={newUnit.parent_id} onChange={e=>setNewUnit({...newUnit,parent_id:e.target.value})} style={{flex:1,fontSize:12.5}}>
+            <option value="">Parent…</option>{units.map(u=><option key={u.id} value={u.id}>{u.name}</option>)}</select>
+        </div>
+        <button className="btn bp" disabled={busy} onClick={addUnit}>+ Add unit</button>
+      </div>
+    </React.Fragment>}
+    {tab==="roles"&&<React.Fragment>
+      {roles.map(r=><div key={r.id} style={{background:"var(--sur)",borderRadius:8,padding:12,marginTop:10}}>
+        <b style={{fontSize:14}}>{r.name}</b>
+        <div className="perm-row"><span className="perm-label">View all documents</span>
+          <button className={"tg"+(r.permissions?.docs_view==="all"?" on":"")} disabled={busy} onClick={()=>togglePerm(r,"docs_view")}/></div>
+        {Object.entries(PERM_LABELS).map(([k,l])=><div key={k} className="perm-row">
+          <span className="perm-label">{l}</span>
+          <button className={"tg"+(r.permissions?.[k]?" on":"")} disabled={busy} onClick={()=>togglePerm(r,k)}/></div>)}
+      </div>)}
+      <div style={{display:"flex",gap:7,marginTop:12}}>
+        <input type="text" value={newRole} onChange={e=>setNewRole(e.target.value)} placeholder="New role name" style={{flex:1}}/>
+        <button className="btn bg bsm" disabled={busy} onClick={addRole}>+ Add</button>
+      </div>
+    </React.Fragment>}
+    {tab==="invite"&&<div style={{marginTop:10}}>
+      <div className="al ai" style={{marginTop:0}}>Share this code with your team. They sign up, then enter this code to join your organisation.</div>
+      <div style={{background:"var(--sur)",borderRadius:8,padding:16,textAlign:"center",marginTop:10}}>
+        <div style={{fontSize:11,color:"var(--mu)",textTransform:"uppercase",letterSpacing:".06em",fontWeight:700}}>Invite code</div>
+        <div style={{fontSize:26,fontWeight:900,letterSpacing:".1em",color:"var(--tl)",marginTop:4,fontFamily:"monospace"}}>{ctx.org?.invite_code||"—"}</div>
+      </div>
+      <button className="btn bg" onClick={()=>{navigator.clipboard?.writeText(ctx.org?.invite_code||"");}}>📋 Copy code</button>
+    </div>}
+    {err&&<div className="al ae">{err}</div>}
+  </div>;
+}
+
+/* ══ AI CHAT ══ */
+function AIChat({ctx,onClose}){
+  const[msgs,setMsgs]=useState([]);const[q,setQ]=useState("");const[busy,setBusy]=useState(false);
+  const endRef=useRef();
+  const isP=ctx.acct==="individual";
+  const SUGG=isP
+    ?["What expires in the next 30 days?","What medicines am I currently taking?","When is my next doctor follow-up?","What are my total insurance premiums?","Which documents have no expiry date?"]
+    :["Which documents expire this quarter?","What penalties are we exposed to?","List all compliance documents overdue","What are our total AMC costs?","Which licences need renewal soon?"];
+  const send=async t=>{
+    const question=t||q;if(!question.trim()||busy)return;
+    setQ("");setMsgs(m=>[...m,{u:1,t:question}]);setBusy(true);
+    try{
+      const r=await AI.chat(question,ctx.docs,ctx.actions,ctx.orgName||"your personal vault");
+      const a=r?.candidates?.[0]?.content?.parts?.[0]?.text||JSON.stringify(r).slice(0,500);
+      setMsgs(m=>[...m,{u:0,t:a}]);
+    }catch(e){setMsgs(m=>[...m,{u:0,t:"Error: "+(e?.message||"try again")}]);}
+    setBusy(false);setTimeout(()=>endRef.current?.scrollIntoView({behavior:"smooth"}),80);
+  };
+  return <div className="chat-panel">
+    <div className="chat-head">
+      <div style={{fontSize:20}}>💬</div>
+      <div style={{flex:1}}><div style={{fontWeight:700,fontSize:15}}>Ask your documents</div>
+        <div style={{fontSize:11.5,color:"var(--mu)"}}>{ctx.docs.length} documents · {(ctx.actions||[]).length} actions</div></div>
+      <button className="btn bg bsm" onClick={onClose}>✕</button>
+    </div>
+    <div className="chat-msgs">
+      {msgs.length===0&&<React.Fragment>
+        <div style={{textAlign:"center",color:"var(--mu)",fontSize:13.5,marginTop:16}}>Ask anything about your documents.</div>
+        <div className="sugg">{SUGG.map((s,i)=><button key={i} onClick={()=>send(s)}>{s}</button>)}</div>
+      </React.Fragment>}
+      {msgs.map((m,i)=><div key={i} className={"msg "+(m.u?"msg-u":"msg-a")}>{m.t}</div>)}
+      {busy&&<div className="msg msg-a"><span className="spin"/>Thinking…</div>}
+      <div ref={endRef}/>
+    </div>
+    <div className="chat-foot">
+      <input type="text" value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==="Enter"&&send()} placeholder="Ask about your documents…"/>
+      <button onClick={()=>send()} disabled={busy}>➤</button>
+    </div>
+  </div>;
+}
+
+/* ══ SETTINGS ══ */
+function Settings({ctx,onClose,onRefresh}){
+  const[k,setK]=useState(AI.getKey());const[tst,setTst]=useState(false);
+  const[fName,setFName]=useState("");const[fIcon,setFIcon]=useState("📁");const[busy,setBusy]=useState(false);
+  const plan=gp(ctx.plan,ctx.acct);
+  const PLANS_SET=ctx.acct==="corporate"?ORG_PLANS:IND_PLANS;
+  const ml=AI.mode==="server"?"✅ Server (secure)":AI.mode==="browser"?"⚠️ Browser key":"Auto-detect on next scan";
+  const icons=["📁","📂","🏢","🏠","🚗","🛡️","📋","🔑","🔧","💰","📊","⚖️","🏦","🎓","🔥","💊","🏥","📑"];
+  const addFolder=async()=>{if(!fName.trim())return;setBusy(true);
+    await sb.from("folders").insert({name:fName.trim(),icon:fIcon,org_id:ctx.orgId||null});
+    setFName("");await onRefresh();setBusy(false);};
+  const delFolder=async id=>{setBusy(true);
+    await sb.from("documents").update({folder_id:null}).eq("folder_id",id);
+    await sb.from("folders").delete().eq("id",id);await onRefresh();setBusy(false);};
+  return <div className="card">
+    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+      <h2 style={{marginBottom:0}}>⚙ Settings</h2><button className="btn bg bsm" onClick={onClose}>✕</button>
+    </div>
+    <div className="al ai" style={{marginTop:0}}>AI mode: <b>{ml}</b></div>
+    {AI.mode!=="server"&&<React.Fragment>
+      <label>Gemini API key</label>
+      <input type="text" value={k} onChange={e=>setK(e.target.value)} placeholder="AIza…"/>
+      <div style={{fontSize:11.5,color:"var(--mu)",marginTop:3}}>Free key from aistudio.google.com → Get API key</div>
+      <button className="btn bp" onClick={()=>{AI.setKey(k);onClose();}}>Save key</button>
+      <button className="btn bg" style={{marginTop:7}} disabled={tst} onClick={async()=>{setTst(true);AI.resetMode();try{await AI.callServer([{text:"ping"}]);}catch(_){}setTst(false);}}>
+        {tst?<React.Fragment><span className="spin"/>Checking…</React.Fragment>:"Re-check server mode"}</button>
+    </React.Fragment>}
+    <h3 style={{marginTop:18}}>📁 Folders</h3>
+    {ctx.folders.map(f=><div key={f.id} style={{display:"flex",alignItems:"center",gap:8,padding:"7px 0",borderTop:"1px solid var(--brd)"}}>
+      <span style={{fontSize:18}}>{f.icon}</span><span style={{flex:1,fontSize:13.5,fontWeight:500}}>{f.name}</span>
+      <button className="btn bd bsm" disabled={busy} onClick={()=>delFolder(f.id)}>Delete</button></div>)}
+    <div style={{display:"flex",gap:6,flexWrap:"wrap",margin:"8px 0"}}>
+      {icons.map(i=><span key={i} style={{fontSize:20,cursor:"pointer",opacity:fIcon===i?1:.4}} onClick={()=>setFIcon(i)}>{i}</span>)}</div>
+    <div style={{display:"flex",gap:7}}>
+      <input type="text" value={fName} onChange={e=>setFName(e.target.value)} placeholder="New folder name" style={{flex:1}}/>
+      <button className="btn bg bsm" disabled={busy} onClick={addFolder}>+ Add</button></div>
+    <h3 style={{marginTop:18}}>Plan</h3>
+    <div style={{display:"grid",gap:8}}>
+      {Object.entries(PLANS_SET).map(([key,p])=><div key={key} style={{padding:"11px 13px",borderRadius:8,border:"1.5px solid "+(ctx.plan===key?"var(--tl)":"var(--brd)"),background:ctx.plan===key?"var(--tlb)":"var(--bg)"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div><b style={{fontSize:14}}>{p.n}</b> {ctx.plan===key&&<span className="badge btl">CURRENT</span>}
+            <div style={{fontSize:11.5,color:"var(--mu)",marginTop:1}}>{p.docs<9999?p.docs+" documents":"Unlimited documents"}{p.users?" · "+p.users+" users":""}</div></div>
+          <div style={{textAlign:"right"}}><div style={{fontSize:16,fontWeight:800}}>{p.p}</div><div style={{fontSize:10.5,color:"var(--mu)"}}>{p.note}</div></div>
+        </div></div>)}
+    </div>
+    <div style={{fontSize:11.5,color:"var(--mu)",textAlign:"center",marginTop:10}}>Contact support to change plans.</div>
+  </div>;
+}
+
+/* ══ JOIN ORG ══ */
+function JoinOrg({user,onDone,onSkip}){
+  const[code,setCode]=useState("");const[busy,setBusy]=useState(false);const[err,setErr]=useState(null);
+  const join=async()=>{
+    if(!code.trim()){setErr("Enter the invite code.");return;}
+    setBusy(true);setErr(null);
+    try{
+      const{data:org,error}=await sb.from("organisations").select("*").eq("invite_code",code.trim().toUpperCase()).maybeSingle();
+      if(error)throw error;
+      if(!org){setErr("Invalid invite code. Check with your administrator.");setBusy(false);return;}
+      const{data:roles}=await sb.from("custom_roles").select("*").eq("org_id",org.id);
+      const staff=(roles||[]).find(r=>!r.permissions?.team_manage)||roles?.[0];
+      await sb.from("org_members").insert({org_id:org.id,user_id:user.id,role_id:staff?.id,is_org_admin:false});
+      await sb.from("profiles").update({account_type:"corporate",org_id:org.id,plan:org.plan}).eq("user_id",user.id);
+      onDone();
+    }catch(e){setErr(e.message||"Could not join.");setBusy(false);}
+  };
+  return <div className="wrap" style={{maxWidth:440}}>
+    <div className="lbrand" style={{marginTop:30,marginBottom:18}}>
+      <div className="lbn" style={{fontSize:24}}>DOCTRACK <span className="lbt" style={{fontSize:16}}>· Tokei</span></div>
+      <div className="lbg">Join your organisation</div>
+    </div>
+    <div className="card" style={{marginTop:0}}>
+      <label>Invite code</label>
+      <input type="text" value={code} onChange={e=>setCode(e.target.value.toUpperCase())} placeholder="e.g. A1B2C3D4" style={{textAlign:"center",fontSize:18,letterSpacing:".12em",fontFamily:"monospace"}}/>
+      <div style={{fontSize:12,color:"var(--mu)",marginTop:5}}>Your administrator will share this code with you.</div>
+      <button className="btn bp" disabled={busy} onClick={join}>{busy?<React.Fragment><span className="spin"/>Joining…</React.Fragment>:"Join organisation"}</button>
+      <button className="btn bg" style={{marginTop:7}} onClick={onSkip}>Create a new organisation instead</button>
+      {err&&<div className="al ae">{err}</div>}
+    </div>
+  </div>;
+}
+
+/* ══ APP ROOT ══ */
+function App(){
+  const[ses,setSes]=useState(undefined);
+  const[view,setView]=useState("landing");   // landing|auth|wizard|join|app
+  const[acctPick,setAcctPick]=useState(null);
+  const[prof,setProf]=useState(null);const[org,setOrg]=useState(null);
+  const[docs,setDocs]=useState([]);const[folders,setFolders]=useState([]);
+  const[actions,setActions]=useState([]);const[units,setUnits]=useState([]);const[notifs,setNotifs]=useState([]);
+  const[loading,setLoading]=useState(false);const[lerr,setLerr]=useState(null);
+  const[tab,setTab]=useState("home");const[openDoc,setOpenDoc]=useState(null);
+  const[showChat,setShowChat]=useState(false);const[showNotif,setShowNotif]=useState(false);
+  const[preloaded,setPre]=useState(null);
+
+  useEffect(()=>{
+    if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(()=>{});
+    if(window.location.search.includes("incoming=1")&&"caches"in window){
+      caches.open("tokei-share-v1").then(c=>c.match("/incoming-share").then(async r=>{
+        if(r){const b=await r.blob();const n=decodeURIComponent(r.headers.get("X-File-Name")||"shared");
+          setPre(new File([b],n,{type:b.type||"application/octet-stream"}));c.delete("/incoming-share");}
+      })).catch(()=>{});
+      window.history.replaceState({},"",window.location.pathname);
+    }
+  },[]);
+
+  useEffect(()=>{
+    sb.auth.getSession().then(({data})=>setSes(data.session));
+    const{data:sub}=sb.auth.onAuthStateChange((_e,s)=>setSes(s));
+    return()=>sub.subscription.unsubscribe();
+  },[]);
+
+  const load=useCallback(async()=>{
+    setLoading(true);setLerr(null);
+    try{
+      const{data:{user},error:ue}=await sb.auth.getUser();
+      if(ue||!user)throw new Error("Session expired — please sign in again.");
+      let{data:p,error:pe}=await sb.from("profiles").select("*").eq("user_id",user.id).maybeSingle();
+      if(pe)throw pe;
+      if(!p){
+        const pt=localStorage.getItem("tokei_pending_type")||"individual";
+        const pn=localStorage.getItem("tokei_pending_name")||"";
+        const{error:ie}=await sb.from("profiles").insert({user_id:user.id,email:user.email,full_name:pn,role:"member",plan:"free",account_type:pt});
+        if(ie)throw ie;
+        p={user_id:user.id,email:user.email,full_name:pn,role:"member",plan:"free",account_type:pt,org_id:null};
+      }
+      const pendType=localStorage.getItem("tokei_pending_type");
+      if(pendType&&p.account_type!==pendType&&!p.org_id){
+        await sb.from("profiles").update({account_type:pendType}).eq("user_id",user.id);
+        p.account_type=pendType;
+      }
+      setProf(p);
+      if(p.account_type==="corporate"&&!p.org_id){
+        localStorage.removeItem("tokei_pending_type");
+        setView("orgchoice");setLoading(false);return;
+      }
+      localStorage.removeItem("tokei_pending_type");localStorage.removeItem("tokei_pending_name");
+      let orgData=null;
+      if(p.org_id){
+        const{data:o}=await sb.from("organisations").select("*").eq("id",p.org_id).maybeSingle();
+        orgData=o;setOrg(o);
+        const{data:u}=await sb.from("org_units").select("*").eq("org_id",p.org_id).order("name");
+        setUnits(u||[]);
+      }
+      const[d,f,a,n]=await Promise.all([
+        sb.from("documents").select("*").order("expiry_date",{ascending:true,nullsFirst:false}),
+        sb.from("folders").select("*").order("name"),
+        sb.from("action_items").select("*").order("due_date",{ascending:true,nullsFirst:false}),
+        sb.from("notifications").select("*").eq("user_id",user.id).order("created_at",{ascending:false}).limit(20)
+      ]);
+      setDocs(d.data||[]);setFolders(f.data||[]);setActions(a.data||[]);setNotifs(n.data||[]);
+      setView("app");
+    }catch(e){setLerr(e?.message||"Failed to load.");}
+    finally{setLoading(false);}
+  },[]);
+
+  useEffect(()=>{if(ses)load();else if(ses===null&&view==="app")setView("landing");},[ses]);
+
+  const ctx={userId:ses?.user?.id,email:ses?.user?.email,acct:prof?.account_type||"individual",
+    plan:prof?.plan||"free",orgId:prof?.org_id||null,org,orgName:org?.name,sector:org?.sector||"general",
+    docs,folders,actions,units,isOrgAdmin:prof?.role==="admin"};
+
+  if(ses===undefined)return <div style={{textAlign:"center",marginTop:110}}>
+    <div style={{fontSize:32,marginBottom:10}}>📋</div>
+    <div className="lbn" style={{fontSize:22}}>DOCTRACK <span className="lbt" style={{fontSize:15}}>· Tokei</span></div>
+    <div style={{marginTop:14,color:"var(--mu)"}}><span className="spin"/>Starting…</div></div>;
+
+  if(!ses){
+    if(view==="auth")return <Auth acctType={acctPick} onBack={()=>setView("landing")}/>;
+    return <Landing onPick={t=>{setAcctPick(t);setView("auth");}}/>;
+  }
+
+  if(lerr)return <div className="wrap"><div className="card" style={{marginTop:40}}>
+    <div className="al ae">{lerr}</div>
+    <button className="btn bp" onClick={load}>Retry</button>
+    <button className="btn bg" style={{marginTop:7}} onClick={()=>sb.auth.signOut()}>Sign out</button></div></div>;
+
+  if(view==="orgchoice")return <div className="wrap" style={{maxWidth:440}}>
+    <div className="lbrand" style={{marginTop:30,marginBottom:18}}>
+      <div className="lbn" style={{fontSize:24}}>DOCTRACK <span className="lbt" style={{fontSize:16}}>· Tokei</span></div>
+      <div className="lbg">Set up your organisation</div></div>
+    <div className="card" style={{marginTop:0}}>
+      <button className="btn bp" onClick={()=>setView("wizard")}>🏢 Create a new organisation</button>
+      <button className="btn bg" style={{marginTop:9}} onClick={()=>setView("join")}>🔑 Join with an invite code</button>
+      <button className="btn bg" style={{marginTop:9}} onClick={async()=>{
+        await sb.from("profiles").update({account_type:"individual"}).eq("user_id",ses.user.id);load();}}>
+        👤 Use as personal account instead</button>
+    </div></div>;
+  if(view==="wizard")return <OrgWizard user={ses.user} onDone={load}/>;
+  if(view==="join")return <JoinOrg user={ses.user} onDone={load} onSkip={()=>setView("wizard")}/>;
+  if(loading&&!prof)return <div style={{textAlign:"center",marginTop:110,color:"var(--mu)"}}><span className="spin"/>Loading your vault…</div>;
+
+  const isCorp=ctx.acct==="corporate";
+  const isLoanSector=ctx.sector==="banking-loans";
+  const plan=gp(ctx.plan,ctx.acct);
+  const unread=notifs.filter(n=>!n.read).length;
+  const overdueCount=docs.filter(d=>{const n=daysTo(d.expiry_date);return n!==null&&n<0;}).length
+    +actions.filter(a=>a.status==="pending"&&a.due_date&&daysTo(a.due_date)<0).length;
+
+  const markRead=async()=>{if(unread){await sb.from("notifications").update({read:true}).eq("user_id",ctx.userId).eq("read",false);
+    setNotifs(notifs.map(n=>({...n,read:true})));}};
+
+  const TABS=isCorp
+    ?[["home","🏠","Home"],["vault","📁","Vault"],["actions","✓","Actions"],["timeline","📅","Timeline"],
+      isLoanSector?["loans","💳","Loans"]:["team","👥","Team"]]
+    :[["home","🏠","Home"],["vault","📁","Vault"],["actions","💊","Actions"],["timeline","📅","Timeline"],["settings","⚙","More"]];
+
+  return <React.Fragment>
+    <div className="wrap">
+      <div className="topbar">
+        <div><span className="brand">DOCTRACK <em>· Tokei</em></span>
+          <span className="brand-sub">{isCorp?(org?.name||"Organisation"):(prof?.full_name||ctx.email)}</span></div>
+        <div className="ta">
+          <span className="badge btl">{plan.b}</span>
+          <div className="nbell" onClick={()=>{setShowNotif(!showNotif);markRead();}}>
+            <span style={{fontSize:19}}>🔔</span>{unread>0&&<span className="nbg">{unread}</span>}</div>
+          <button className="btn bg bsm" onClick={()=>sb.auth.signOut()}>Exit</button>
+        </div>
+      </div>
+
+      {showNotif&&<div className="card" style={{marginTop:8}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+          <h3 style={{marginBottom:0}}>Notifications</h3>
+          <button className="btn bg bsm" onClick={()=>setShowNotif(false)}>✕</button></div>
+        {notifs.length===0?<div style={{color:"var(--mu)",fontSize:13,padding:10,textAlign:"center"}}>No notifications yet.</div>
+          :notifs.slice(0,10).map(n=><div key={n.id} style={{padding:"9px 0",borderTop:"1px solid var(--brd)"}}>
+            <div style={{fontWeight:600,fontSize:13.5}}>{n.title}</div>
+            <div style={{fontSize:12,color:"var(--mu)",marginTop:1}}>{n.body}</div></div>)}
+      </div>}
+
+      {preloaded&&<div className="al aw">📨 File received from another app — analyse it below.</div>}
+      {openDoc&&<Detail doc={openDoc} ctx={ctx} onClose={()=>setOpenDoc(null)} onDeleted={()=>{setOpenDoc(null);load();}} onChanged={load}/>}
+
+      {tab==="home"&&<React.Fragment>
+        {overdueCount>0&&<div className="al ae"><b>⚠️ {overdueCount} item{overdueCount>1?"s":""} overdue</b> — check Vault and Actions.</div>}
+        {isCorp&&<div style={{display:"flex",alignItems:"center",gap:7,marginTop:12,fontSize:12.5,color:"var(--mu)"}}>
+          <span style={{fontSize:17}}>{SECTORS[ctx.sector]?.i}</span>{SECTORS[ctx.sector]?.n}</div>}
+        <Uploader ctx={ctx} onSaved={load} preloaded={preloaded} onClearPre={()=>setPre(null)}/>
+        <Vault ctx={ctx} onOpen={setOpenDoc} loading={loading}/>
+      </React.Fragment>}
+      {tab==="vault"&&<Vault ctx={ctx} onOpen={setOpenDoc} loading={loading}/>}
+      {tab==="actions"&&<Actions ctx={ctx} onRefresh={load}/>}
+      {tab==="timeline"&&<Timeline ctx={ctx} onOpen={setOpenDoc}/>}
+      {tab==="loans"&&isCorp&&<LoanModule ctx={ctx} onRefresh={load}/>}
+      {tab==="team"&&isCorp&&<TeamPanel ctx={ctx} onRefresh={load}/>}
+      {tab==="settings"&&<Settings ctx={ctx} onClose={()=>setTab("home")} onRefresh={load}/>}
+      {isCorp&&tab==="team"&&<div style={{marginTop:12}}><Settings ctx={ctx} onClose={()=>setTab("home")} onRefresh={load}/></div>}
+    </div>
+
+    {!showChat&&<button className="chat-btn" onClick={()=>setShowChat(true)}>💬</button>}
+    {showChat&&<AIChat ctx={ctx} onClose={()=>setShowChat(false)}/>}
+
+    <div className="bnav">
+      {TABS.map(([k,i,l])=><button key={k} className={"bn"+(tab===k?" on":"")} onClick={()=>{setTab(k);setOpenDoc(null);}}>
+        <span className="bni">{i}</span><span>{l}</span></button>)}
+    </div>
+  </React.Fragment>;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+<script>
+if("serviceWorker"in navigator){navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(function(){});}
+window.addEventListener("DOMContentLoaded",function(){
+  try{
+    var src=document.getElementById("appsrc").textContent;
+    var out=Babel.transform(src,{presets:[["react",{runtime:"classic"}]]}).code;
+    var s=document.createElement("script");s.textContent=out;document.body.appendChild(s);
+  }catch(e){
+    document.getElementById("root").innerHTML='<div style="max-width:520px;margin:60px auto;padding:22px;font-family:sans-serif;color:#B83228;background:#FDF2F0;border-radius:12px"><b>Startup error:</b><br><br>'+(e&&e.message?e.message:String(e))+'</div>';
+    console.error("Tokei startup:",e);
+  }
+});
+</script>
+</body>
+</html>
